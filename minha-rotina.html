@@ -4935,9 +4935,6 @@ a { color: inherit; text-decoration: none; }
     if (!location.hash) location.replace('#/hoje');
     render();
 
-    if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
-      navigator.serviceWorker.register('sw.js').catch(function () { /* segue sem cache */ });
-    }
   }
 
   App.render = render;
