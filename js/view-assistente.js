@@ -14,7 +14,8 @@
     { texto: 'O que faço agora?', acao: 'agora' },
     { texto: 'Meu dia está cheio demais', acao: 'cheio' },
     { texto: 'Estou atrasada', acao: 'atrasada' },
-    { texto: 'Quero descansar', acao: 'descanso' }
+    { texto: 'Quero descansar', acao: 'descanso' },
+    { texto: 'O dia não saiu como planejei', acao: 'saidas' }
   ];
 
   function falar(quem, texto, tipo, dados) {
@@ -95,17 +96,26 @@
         (tarefas.length ? 'Vamos decidir o que fica?' : 'A agenda em si já está cheia — dá para adiar algum compromisso?'),
         'triagem', { iso: hoje });
 
+    } else if (acao === 'saidas') {
+      var alt = store.estado.alternativas;
+      falar('app', alt.length
+        ? 'Está tudo bem. Foi para isso que você escreveu estas saídas:'
+        : 'Você ainda não escreveu suas alternativas. Dá para criá-las em Ajustes — são as saídas para os dias que não saem como o planejado.',
+        alt.length ? 'saidas' : 'texto', { lista: alt });
+
     } else if (acao === 'atrasada') {
       var restantes = motor.itensDoDia(hoje).filter(function (i) {
         var m = u.minutosDe(i.hora);
         return !i.feito && m !== null && m >= u.agoraMin();
       });
+      var comSaidas = store.estado.alternativas.length;
       falar('app', restantes.length
         ? 'Tudo bem. Ainda faltam ' + u.plural(restantes.length, 'atividade', 'atividades') + ' hoje e ' +
           u.horasTexto(Math.max(0, motor.dormir() - u.agoraMin())) + ' até a hora de dormir. ' +
           'Escolha o essencial e deixe o resto para amanhã — a lista existe para servir você, não o contrário.'
         : 'Não sobrou nada marcado para hoje. Respire: o dia pode acabar aqui.',
         'triagem', { iso: hoje });
+      if (comSaidas) falar('app', 'E lembre-se das suas saídas para os dias assim:', 'saidas', { lista: store.estado.alternativas });
 
     } else if (acao === 'descanso') {
       var quando = motor.reservarDescanso(hoje, 30);
@@ -242,6 +252,17 @@
     ]));
   }
 
+  function desenharSaidas(dados) {
+    return el('div', {}, (dados.lista || []).map(function (a) {
+      return el('div.plano-linha', {}, [
+        el('div', {}, [
+          el('div', { style: 'font-family:var(--serif)', text: a.quando }),
+          el('div.mini.sub', { text: a.saida })
+        ])
+      ]);
+    }));
+  }
+
   function desenharMinutos(store) {
     return el('div.linha-btn', {}, [15, 30, 45, 60, 90].map(function (m) {
       return el('button.btn.btn--p.btn--suave', {
@@ -264,6 +285,7 @@
     else if (msg.tipo === 'sugestoes') extra = desenharSugestoes(store, msg.dados);
     else if (msg.tipo === 'triagem') extra = desenharTriagem(store, msg.dados);
     else if (msg.tipo === 'minutos') extra = desenharMinutos(store);
+    else if (msg.tipo === 'saidas') extra = desenharSaidas(msg.dados);
 
     return el('div.balao.balao--app', { style: extra ? 'max-width:100%' : null }, [
       el('div', { text: msg.texto }),

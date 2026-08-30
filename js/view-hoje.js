@@ -32,7 +32,9 @@
     return el('div.hoje-topo', {}, [
       nome && ehHoje ? el('div.mini.fraco', { text: saudacao + ', ' + nome }) : null,
       el('div.hoje-topo__data', { text: u.dataLonga(dia) }),
-      el('div.hoje-topo__frase', { text: '“' + motor.fraseDoDia(dia) + '”' }),
+      el('div.hoje-topo__frase', { text: store.estado.ajustes.lema
+        ? store.estado.ajustes.lema
+        : '“' + motor.fraseDoDia(dia) + '”' }),
       el('div.hoje-topo__linha', {}, [
         ui.barraProgresso(u.pct(feitos, total)),
         el('span.mini.fraco', { text: total ? feitos + '/' + total : '—' })
@@ -274,6 +276,25 @@
     ]);
   }
 
+  /* "Alternativas e saídas": o que fazer quando o dia não sai como o planejado.
+     É a parte mais importante do quadro — a rotina precisa ter porta de saída. */
+  function alternativas(store) {
+    var lista = store.estado.alternativas;
+    if (!lista.length) return null;
+
+    return el('div.cartao', { style: 'margin-top:24px;border-left:3px solid var(--ouro)' }, [
+      el('div.versalete.fraco', { text: 'Alternativas e saídas' }),
+      el('div.pilha.pilha--junta', { style: 'margin-top:10px' }, lista.map(function (a) {
+        return el('div', {}, [
+          el('div', { style: 'font-family:var(--serif);font-size:15px', text: a.quando }),
+          el('div.mini.sub', { text: a.saida })
+        ]);
+      })),
+      el('p.mini.fraco', { style: 'margin-top:12px;font-style:italic',
+        text: 'Cumprir metade com paz vale mais do que cumprir tudo com pressa.' })
+    ]);
+  }
+
   App.views = App.views || {};
   App.views.hoje = {
     titulo: 'Hoje',
@@ -293,6 +314,7 @@
         .concat(tarefasDoDia(store, motor))
         .concat(cuidadosDoDia(store))
         .concat(espiritualDoDia(store, motor));
+      filhos.push(alternativas(store));
       filhos.push(ui.ornamento());
       filhos.push(revisaoDoDia(store));
 

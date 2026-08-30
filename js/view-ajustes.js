@@ -39,6 +39,49 @@
     setTimeout(function () { input.remove(); }, 0);
   }
 
+  /* Editor das alternativas: "se acontecer X, faça Y". */
+  function formAlternativa(store, alt) {
+    var novo = !alt;
+    ui.abrirFormulario({
+      titulo: novo ? 'Nova saída' : 'Editar saída',
+      valores: alt || { quando: '', saida: '' },
+      campos: [
+        { nome: 'quando', rotulo: 'Quando', tipo: 'texto', obrigatorio: true, dica: 'Se não conseguir estudar…' },
+        { nome: 'saida', rotulo: 'O que fazer', tipo: 'texto-longo', obrigatorio: true,
+          dica: 'Faça uma leitura espiritual ou revise anotações.' }
+      ],
+      aoExcluir: novo ? null : function () {
+        store.commit(function (st) {
+          st.alternativas = st.alternativas.filter(function (x) { return x.id !== alt.id; });
+        });
+        App.render();
+      },
+      aoSalvar: function (v) {
+        store.commit(function (st) {
+          if (novo) st.alternativas.push({ id: u.id(), quando: v.quando, saida: v.saida });
+          else Object.assign(alt, { quando: v.quando, saida: v.saida });
+        });
+        App.render();
+      }
+    });
+  }
+
+  function formPrioridades(store) {
+    ui.abrirFormulario({
+      titulo: 'Minhas prioridades',
+      valores: { lista: (store.estado.ajustes.prioridades || []).map(function (t) { return { titulo: t }; }) },
+      campos: [{ nome: 'lista', rotulo: 'O que vem primeiro', tipo: 'lista',
+        ajuda: 'Poucas linhas. São elas que decidem o que fica quando o dia aperta.' }],
+      aoSalvar: function (v) {
+        store.commit(function (st) {
+          st.ajustes.prioridades = v.lista.map(function (i) { return i.titulo; });
+        });
+        ui.aviso('Prioridades guardadas');
+        App.render();
+      }
+    });
+  }
+
   function bloco(titulo, descricao, filhos) {
     return el('div.cartao.pilha.pilha--junta', {}, [
       el('div.item__titulo', { text: titulo }),
@@ -70,6 +113,16 @@
         }
       });
 
+      var campoLema = el('input', {
+        type: 'text', value: a.lema, placeholder: 'Ad Deum per vitam ordinariam.', 'aria-label': 'Lema',
+        onchange: function () {
+          var v = campoLema.value.trim();
+          store.commit(function (st) { st.ajustes.lema = v; });
+          ui.aviso('Lema guardado');
+          App.render();
+        }
+      });
+
       function campoHora(chave, rotulo) {
         var input = el('input', {
           type: 'time', value: a[chave], 'aria-label': rotulo,
@@ -93,6 +146,39 @@
           el('div.item__titulo', { text: 'Meus horários' }),
           el('p.mini.sub', { text: 'O assistente usa esses limites para saber onde cabe cada coisa.' }),
           el('div.duo', {}, [campoHora('acordar', 'Costumo acordar'), campoHora('dormir', 'Costumo dormir')])
+        ]),
+
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Lema' }),
+          el('p.mini.sub', { text: 'Aparece no alto da tela Hoje, todos os dias.' }),
+          el('div.campo', {}, [campoLema]),
+          el('p.mini.fraco', { text: 'Em branco, o app mostra uma frase suave diferente a cada dia.' })
+        ]),
+
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Prioridades' }),
+          el('p.mini.sub', { text: (a.prioridades && a.prioridades.length)
+            ? a.prioridades.join(' · ') : 'Ainda não há prioridades escritas.' }),
+          el('div.linha-btn', {}, [
+            el('button.btn.btn--p', { type: 'button', text: 'Editar prioridades',
+              onclick: function () { formPrioridades(store); } })
+          ])
+        ]),
+
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Alternativas e saídas' }),
+          el('p.mini.sub', { text: 'O que fazer quando o dia não sai como o planejado. Aparecem na tela Hoje e no assistente.' }),
+          el('div.pilha.pilha--junta', {}, store.estado.alternativas.map(function (alt) {
+            return el('div', { style: 'cursor:pointer;padding:8px 0;border-bottom:1px solid var(--filete)',
+              onclick: function () { formAlternativa(store, alt); } }, [
+              el('div', { style: 'font-family:var(--serif)', text: alt.quando }),
+              el('div.mini.fraco', { text: alt.saida })
+            ]);
+          })),
+          el('div.linha-btn', {}, [
+            el('button.btn.btn--p', { type: 'button', text: '+ Nova saída',
+              onclick: function () { formAlternativa(store, null); } })
+          ])
         ]),
 
         bloco('Aparência', 'Vale para este aparelho.', ['auto', 'claro', 'escuro'].map(function (t) {
@@ -127,13 +213,14 @@
           el('button.btn.btn--p', { type: 'button', text: '⤒ Restaurar backup', onclick: function () { restaurarBackup(store); } })
         ]),
 
-        bloco('Rotina de exemplo', 'Substitui tudo pelo modelo inicial, com rotina, rituais, cuidados e matérias.', [
+        bloco('Rotina "Fé, estudo e disciplina"',
+          'Carrega o quadro semanal inteiro: horários de segunda a domingo, checklist diário, oração da noite, prioridades, lema e as saídas para os dias pesados.', [
           el('button.btn.btn--p', {
-            type: 'button', text: 'Carregar exemplo',
+            type: 'button', text: 'Carregar a rotina do quadro',
             onclick: function () {
-              if (!confirm('Isso substitui sua rotina atual pelo exemplo. Continuar?')) return;
+              if (!confirm('Isso substitui a rotina atual pelo quadro "Fé, estudo e disciplina". Continuar?')) return;
               store.semear();
-              ui.aviso('Exemplo carregado');
+              ui.aviso('Rotina carregada');
               App.render();
             }
           })

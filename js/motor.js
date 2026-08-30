@@ -128,37 +128,41 @@
     var avisos = [];
     var itens = itensDoDia(iso);
     var tarefas = tarefasDoDia(iso);
-    var janela = dormir() - acordar();
 
-    var comprometido = itens.reduce(function (s, i) { return s + (i.duracao || 0); }, 0)
-      + tarefas.reduce(function (s, t) { return s + (t.estimativa || 30); }, 0);
+    /* 1. O que foi acrescentado não cabe no que sobrou.
+       A rotina que ela desenhou de propósito não é motivo de alarme:
+       o aviso é sobre a carga extra — tarefas e compromissos do dia. */
+    var livre = vagos(ocupacao(iso), acordar(), dormir(), 15)
+      .reduce(function (soma, v) { return soma + (v.fim - v.ini); }, 0);
+    var extra = tarefas.reduce(function (soma, t) { return soma + (t.estimativa || 30); }, 0);
 
-    /* 1. Dia cheio demais */
-    if (janela > 0 && comprometido > janela * 0.85 && itens.length + tarefas.length > 3) {
+    if (extra > 0 && extra > livre) {
       avisos.push({
         chave: 'cheio',
         tom: 'atencao',
         titulo: 'Seu dia está cheio demais',
-        texto: 'São ' + u.horasTexto(comprometido) + ' de atividades para ' + u.horasTexto(janela) +
-               ' acordada. Quer que eu ajude a escolher o que fica?',
+        texto: 'São ' + u.horasTexto(extra) + ' de tarefas para ' + u.horasTexto(livre) +
+               ' livres entre os compromissos. Quer escolher o que fica?',
         acao: { rotulo: 'Reorganizar', rota: '#/assistente?modo=reorganizar&dia=' + iso }
       });
     }
 
-    /* 2. Concentração de coisas importantes numa faixa do dia */
+    /* 2. Coisas demais acrescentadas na mesma faixa do dia. */
     var faixas = [[6 * 60, 12 * 60, 'de manhã'], [12 * 60, 18 * 60, 'entre 12h e 18h'], [18 * 60, 24 * 60, 'à noite']];
     faixas.forEach(function (f) {
-      var naFaixa = itens.filter(function (i) {
+      /* Só compromissos entram aqui: tarefas não têm hora e já são
+         tratadas pelo aviso anterior. */
+      var eventos = itens.filter(function (i) {
         var m = u.minutosDe(i.hora);
-        return m !== null && m >= f[0] && m < f[1] && i.area !== 'sono' && i.area !== 'alimentacao';
-      }).length + tarefas.filter(function (t) { return t.prioridade === 3; }).length;
+        return i.tipo === 'evento' && m !== null && m >= f[0] && m < f[1];
+      }).length;
 
-      if (naFaixa >= 6) {
+      if (eventos >= 3) {
         avisos.push({
           chave: 'concentracao',
           tom: 'atencao',
-          titulo: 'Muita coisa ' + f[2],
-          texto: 'Você colocou ' + naFaixa + ' atividades importantes nesse intervalo. Quer que eu reorganize?',
+          titulo: 'Muito compromisso ' + f[2],
+          texto: 'São ' + eventos + ' compromissos nesse intervalo, além da sua rotina. Quer reorganizar?',
           acao: { rotulo: 'Ver sugestão', rota: '#/assistente?modo=reorganizar&dia=' + iso }
         });
       }

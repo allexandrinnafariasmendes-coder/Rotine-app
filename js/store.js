@@ -47,10 +47,13 @@
         nome: '',
         tema: 'auto',
         semeado: false,
-        acordar: '06:30',
-        dormir: '22:30',
+        acordar: '05:00',
+        dormir: '22:00',
+        lema: '',
+        prioridades: [],
         secoes: { estudos: true, autocuidado: true, espiritual: true, objetivos: true }
       },
+      alternativas: [],   /* saídas para os dias que não saem como o planejado */
       blocos: [],      /* rotina recorrente */
       eventos: [],     /* compromissos de um dia específico */
       tarefas: [],
@@ -68,84 +71,104 @@
 
   /* ------------------------------------------------------ seed */
 
+  /* Rotina "Fé, estudo e disciplina", transcrita do quadro semanal.
+     Dias: 0 = domingo … 6 = sábado. */
   function exemplo() {
     var todos = [0, 1, 2, 3, 4, 5, 6];
-    var semana = [1, 2, 3, 4, 5];
-    var h = u.hoje();
+    var aula = [1, 3, 5];
+    var estudo = [2, 4];
 
-    var bio = u.id(), mat = u.id();
-    var tMendel = u.id(), tHeredo = u.id(), tProb = u.id(), tAfim = u.id(), tQuad = u.id();
+    function bloco(titulo, hora, duracao, dias, area, fixo, nota) {
+      return { id: u.id(), titulo: titulo, hora: hora, duracao: duracao, dias: dias,
+               area: area, fixo: !!fixo, nota: nota || '' };
+    }
 
     return {
       blocos: [
-        { id: u.id(), titulo: 'Acordar', hora: '06:30', duracao: 15, dias: todos, area: 'sono', fixo: true, nota: '' },
-        { id: u.id(), titulo: 'Café da manhã', hora: '07:00', duracao: 30, dias: todos, area: 'alimentacao', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Estudo', hora: '07:30', duracao: 90, dias: semana, area: 'estudo', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Almoço', hora: '13:30', duracao: 30, dias: todos, area: 'alimentacao', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Descanso', hora: '14:00', duracao: 60, dias: todos, area: 'descanso', fixo: false, nota: 'Sem culpa. Descansar também é parte do dia.' },
-        { id: u.id(), titulo: 'Estudo', hora: '15:00', duracao: 90, dias: semana, area: 'estudo', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Preparar-se', hora: '16:30', duracao: 45, dias: semana, area: 'pessoal', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Jantar', hora: '19:30', duracao: 30, dias: todos, area: 'alimentacao', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Revisão do dia', hora: '20:00', duracao: 15, dias: todos, area: 'pessoal', fixo: false, nota: '' },
-        { id: u.id(), titulo: 'Dormir', hora: '22:30', duracao: 0, dias: todos, area: 'sono', fixo: true, nota: '' }
+        bloco('Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Água e alongamento leve.'),
+        bloco('Oração da manhã · Leitura espiritual · Terço', '05:30', 30, todos, 'espiritual', false, ''),
+        bloco('Missa', '06:00', 30, todos, 'espiritual', true, ''),
+        bloco('Café da manhã · Arrumar-se', '06:30', 30, todos, 'alimentacao', false, 'Preparar-se para o dia.'),
+        bloco('Revisão do dia', '07:00', 30, todos, 'pessoal', false, ''),
+        bloco('Saída · Deslocamento · Organização', '07:30', 30, todos, 'pessoal', false, ''),
+
+        bloco('Aulas', '08:00', 240, aula, 'escola', true, ''),
+        bloco('Estudos / Tarefas', '08:00', 240, estudo, 'estudo', false, ''),
+        bloco('Administração da casa / Tarefas', '08:00', 240, [6], 'casa', false, ''),
+        bloco('Missa dominical e comunidade', '08:00', 240, [0], 'espiritual', true, ''),
+
+        bloco('Almoço · Gratidão · Descanso breve', '12:00', 30, todos, 'alimentacao', false, ''),
+        bloco('Leitura leve', '12:30', 60, aula, 'hobby', false, ''),
+        bloco('Descanso', '12:30', 60, [2, 4, 6], 'descanso', false, ''),
+        bloco('Almoço em família · Descanso', '12:30', 60, [0], 'pessoal', false, ''),
+
+        bloco('Aulas', '13:30', 240, aula, 'escola', true, ''),
+        bloco('Estudos / Tarefas', '13:30', 240, estudo, 'estudo', false, ''),
+        bloco('Estudos pessoais / Projetos', '13:30', 240, [6], 'estudo', false, ''),
+        bloco('Tempo com família · Lazer · Leitura', '13:30', 240, [0], 'pessoal', false, ''),
+
+        bloco('Treino (ou caminhada)', '18:00', 30, aula, 'exercicio', false, ''),
+        bloco('Oração / Terço · Adoração', '18:00', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
+        bloco('Atividade física leve ou lazer', '18:00', 30, [6], 'exercicio', false, ''),
+        bloco('Passeio · Natureza · Atividade física', '18:00', 30, [0], 'exercicio', false, ''),
+
+        bloco('Banho · Jantar', '18:30', 30, todos, 'alimentacao', false, ''),
+
+        bloco('Estudos', '19:00', 60, aula, 'estudo', false, ''),
+        bloco('Leitura espiritual / Formação', '19:00', 60, estudo, 'espiritual', false, ''),
+        bloco('Livre · Filme bom · Família', '19:00', 60, [6], 'hobby', false, ''),
+        bloco('Planejamento da semana · Leitura', '19:00', 60, [0], 'pessoal', false, ''),
+
+        bloco('Revisar conteúdo · Exercícios / Trabalhos', '20:00', 60, todos, 'estudo', false, ''),
+        bloco('Descanso · Dormir bem', '22:00', 0, todos, 'sono', true, 'Dormir bem para servir melhor amanhã.')
       ],
+
       eventos: [],
+
       rituais: [
-        { id: u.id(), titulo: 'Rotina da manhã', periodo: 'manha', hora: '06:45', dias: todos, itens: [
-          { id: u.id(), titulo: 'Beber água' },
-          { id: u.id(), titulo: 'Higiene' },
-          { id: u.id(), titulo: 'Skincare' },
-          { id: u.id(), titulo: 'Arrumar a cama' }
+        { id: u.id(), titulo: 'Checklist diário', periodo: 'qualquer', hora: '', dias: todos, itens: [
+          { id: u.id(), titulo: 'Missa' },
+          { id: u.id(), titulo: 'Oração' },
+          { id: u.id(), titulo: 'Estudos' },
+          { id: u.id(), titulo: 'Treino' },
+          { id: u.id(), titulo: 'Leitura' },
+          { id: u.id(), titulo: 'Gratidão' }
         ] },
-        { id: u.id(), titulo: 'Rotina noturna', periodo: 'noite', hora: '21:30', dias: todos, itens: [
-          { id: u.id(), titulo: 'Guardar o celular' },
-          { id: u.id(), titulo: 'Higiene' },
-          { id: u.id(), titulo: 'Skincare' },
-          { id: u.id(), titulo: 'Preparar as coisas de amanhã' },
-          { id: u.id(), titulo: 'Revisar o dia' }
+        { id: u.id(), titulo: 'Oração da noite', periodo: 'noite', hora: '21:00', dias: todos, itens: [
+          { id: u.id(), titulo: 'Exame de consciência' },
+          { id: u.id(), titulo: 'Oração da noite' },
+          { id: u.id(), titulo: 'Agradecimentos' }
         ] }
       ],
-      cuidados: [
-        { id: u.id(), titulo: 'Skincare da manhã', categoria: 'pele', intervalo: 1, ultimaVez: null },
-        { id: u.id(), titulo: 'Skincare da noite', categoria: 'pele', intervalo: 1, ultimaVez: null },
-        { id: u.id(), titulo: 'Cuidar do cabelo', categoria: 'cabelo', intervalo: 3, ultimaVez: null },
-        { id: u.id(), titulo: 'Hidratação capilar', categoria: 'cabelo', intervalo: 7, ultimaVez: null },
-        { id: u.id(), titulo: 'Organizar os produtos', categoria: 'organizacao', intervalo: 30, ultimaVez: null },
-        { id: u.id(), titulo: 'Manutenção das unhas', categoria: 'unhas', intervalo: 15, ultimaVez: null }
-      ],
-      objetivos: [
-        { id: u.id(), titulo: 'Ir bem na prova de Biologia', area: 'estudos', prazo: u.somarDias(h, 7), nota: '',
-          passos: [
-            { id: u.id(), titulo: 'Revisar Leis de Mendel', feito: false },
-            { id: u.id(), titulo: 'Resolver heredogramas', feito: false },
-            { id: u.id(), titulo: 'Fazer exercícios de probabilidade', feito: false }
-          ], arquivado: false },
-        { id: u.id(), titulo: 'Deixar o quarto do jeito que eu gosto', area: 'casa', prazo: null, nota: '',
-          passos: [
-            { id: u.id(), titulo: 'Organizar a escrivaninha', feito: false },
-            { id: u.id(), titulo: 'Separar roupas para doar', feito: false }
-          ], arquivado: false },
-        { id: u.id(), titulo: 'Cuidar melhor de mim', area: 'eu', prazo: null, nota: 'Sem pressa, no meu ritmo.',
-          passos: [{ id: u.id(), titulo: 'Manter o skincare por duas semanas', feito: false }], arquivado: false }
-      ],
-      disciplinas: [
-        { id: bio, nome: 'Biologia', topicos: [
-          { id: tMendel, nome: 'Leis de Mendel', assunto: 'Genética', status: 'estudando', ultimaRevisao: null, minutos: 0 },
-          { id: tHeredo, nome: 'Heredogramas', assunto: 'Genética', status: 'nao', ultimaRevisao: null, minutos: 0 },
-          { id: tProb, nome: 'Probabilidade', assunto: 'Genética', status: 'nao', ultimaRevisao: null, minutos: 0 }
-        ] },
-        { id: mat, nome: 'Matemática', topicos: [
-          { id: tAfim, nome: 'Função afim', assunto: 'Funções', status: 'ok', ultimaRevisao: u.somarDias(h, -4), minutos: 50 },
-          { id: tQuad, nome: 'Função quadrática', assunto: 'Funções', status: 'nao', ultimaRevisao: null, minutos: 0 }
-        ] }
-      ],
+
+      cuidados: [],
+      objetivos: [],
+      disciplinas: [],
       sessoes: [],
-      tarefas: [
-        { id: u.id(), titulo: 'Explorar o app e deixar do meu jeito', data: h, feita: false, prioridade: 2, estimativa: 20, area: 'pessoal', objetivoId: null, criadaEm: h }
+      tarefas: [],
+
+      alternativas: [
+        { id: u.id(), quando: 'Se não conseguir estudar', saida: 'Faça uma leitura espiritual ou revise anotações.' },
+        { id: u.id(), quando: 'Se não puder treinar', saida: 'Caminhada leve ou alongamento.' },
+        { id: u.id(), quando: 'Se o dia estiver pesado', saida: 'Respire, reze o terço e confie em Deus.' },
+        { id: u.id(), quando: 'No fim de semana', saida: 'Reserve um tempo para lazer e convívio.' }
       ],
+
+      prioridades: [
+        'Missa todos os dias (6h)',
+        'Estudos e tarefas',
+        'Exercício físico',
+        'Tempo de oração',
+        'Descanso de qualidade',
+        'Alimentação saudável'
+      ],
+
+      lema: 'Ad Deum per vitam ordinariam.',
+
       espiritual: {
         praticas: [
           { id: u.id(), titulo: 'Oração da manhã', momento: 'manha' },
+          { id: u.id(), titulo: 'Terço', momento: 'qualquer' },
           { id: u.id(), titulo: 'Leitura espiritual', momento: 'tarde' },
           { id: u.id(), titulo: 'Exame de consciência', momento: 'noite' }
         ],
@@ -168,6 +191,12 @@
     base.ajustes.tema = temas[base.ajustes.tema] || 'auto';
     base.ajustes.secoes = Object.assign({ estudos: true, autocuidado: true, espiritual: true, objetivos: true },
       (d.ajustes && d.ajustes.secoes) || {});
+    base.ajustes.lema = base.ajustes.lema || '';
+    base.ajustes.prioridades = (base.ajustes.prioridades || []).map(String);
+
+    base.alternativas = (d.alternativas || []).map(function (a) {
+      return { id: a.id || u.id(), quando: String(a.quando || ''), saida: String(a.saida || '') };
+    });
     base.registro = d.registro && typeof d.registro === 'object' ? d.registro : {};
     base.semanas = d.semanas && typeof d.semanas === 'object' ? d.semanas : {};
     base.sessaoAtiva = d.sessaoAtiva || null;
@@ -454,23 +483,36 @@
     notificar();
   }
 
+  function aplicarSeed(estadoAlvo, ex) {
+    Object.keys(ex).forEach(function (k) {
+      if (k === 'lema' || k === 'prioridades') estadoAlvo.ajustes[k] = ex[k];
+      else estadoAlvo[k] = ex[k];
+    });
+    estadoAlvo.ajustes.acordar = '05:00';
+    estadoAlvo.ajustes.dormir = '22:00';
+    estadoAlvo.ajustes.semeado = true;
+  }
+
   function semear() {
     var ex = exemplo();
-    commit(function (s) {
-      Object.keys(ex).forEach(function (k) { s[k] = ex[k]; });
-      s.ajustes.semeado = true;
-    });
+    commit(function (s) { aplicarSeed(s, ex); });
   }
 
   function limpar(manterEstrutura) {
     var guardado = {
       blocos: estado.blocos, rituais: estado.rituais, cuidados: estado.cuidados,
-      disciplinas: estado.disciplinas, objetivos: estado.objetivos, espiritual: estado.espiritual
+      disciplinas: estado.disciplinas, objetivos: estado.objetivos,
+      espiritual: estado.espiritual, alternativas: estado.alternativas
     };
+    var ajustesAntigos = estado.ajustes;
     var nome = estado.ajustes.nome, tema = estado.ajustes.tema;
     estado = estadoInicial();
     estado.ajustes.nome = nome;
     estado.ajustes.tema = tema;
+    estado.ajustes.lema = ajustesAntigos.lema;
+    estado.ajustes.prioridades = ajustesAntigos.prioridades;
+    estado.ajustes.acordar = ajustesAntigos.acordar;
+    estado.ajustes.dormir = ajustesAntigos.dormir;
     estado.ajustes.semeado = true;
     if (manterEstrutura) Object.keys(guardado).forEach(function (k) { estado[k] = guardado[k]; });
     salvar();
@@ -484,9 +526,7 @@
     iniciar: function () {
       carregar();
       if (!estado.ajustes.semeado && !estado.blocos.length) {
-        var ex = exemplo();
-        Object.keys(ex).forEach(function (k) { estado[k] = ex[k]; });
-        estado.ajustes.semeado = true;
+        aplicarSeed(estado, exemplo());
         salvar();
       }
     },

@@ -34,7 +34,7 @@ python3 -m http.server 8000    # depois abra http://localhost:8000
 | 🌿 **Hábitos** | Rituais contextualizados (rotina da manhã, rotina noturna) em vez de caixinhas soltas, com itens "só para hoje" e a pergunta "quer manter amanhã?". |
 | ✨ **Autocuidado** | Pele, cabelo, unhas, corpo e organização, com a próxima data calculada sozinha a partir do ritmo de cada cuidado. |
 | 🕊️ **Vida espiritual** | Práticas, intenções e diário, com o tempo litúrgico calculado offline. Sem sequência, sem pontuação: um dia sem marcar não apaga nada. |
-| 📊 **Minha semana** | Estudos, sono, exercícios, autocuidado, descanso e tarefas — lidos com gentileza, seguidos de uma reflexão sua. |
+| 📊 **Minha semana** | Estudos, sono, exercícios, autocuidado, descanso e tarefas — lidos com gentileza, seguidos das três metas da semana, das suas prioridades e de uma reflexão. |
 | 🤖 **Assistente** | Organiza o dia a partir de uma frase escrita do seu jeito, sugere o que fazer no tempo que você tem e ajuda a tirar peso da lista. |
 
 ## A inteligência da rotina
@@ -46,8 +46,13 @@ linguagem envolvido. O que o app faz sozinho:
   estudar duas horas, preciso arrumar meu quarto e quero descansar" vira uma
   distribuição com horários, respeitando o que já existe na sua rotina, quebrando
   estudos longos em blocos com pausa e remarcando o que for flexível.
-- **Avisa quando o dia está cheio demais** e ajuda a decidir o que fica, o que
-  pode ser adiado (→) e o que pode sair (×), mostrando prioridade e tempo estimado.
+- **Avisa quando o dia está cheio demais** — comparando o que você acrescentou
+  (tarefas e compromissos) com o tempo que sobra entre os horários da rotina,
+  nunca reclamando da rotina que você desenhou de propósito — e ajuda a decidir
+  o que fica, o que pode ser adiado (→) e o que pode sair (×).
+- **Oferece saídas.** As *alternativas e saídas* ("se não conseguir estudar,
+  faça uma leitura espiritual") aparecem na tela Hoje e quando você diz ao
+  assistente que o dia não saiu como planejado.
 - **Cobra descanso.** Se o dia não tem nenhuma pausa, o app diz isso e reserva
   30 minutos no primeiro espaço livre. Descanso é categoria de primeira classe,
   ao lado de estudo e compromisso.
