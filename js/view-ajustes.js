@@ -48,10 +48,10 @@
   }
 
   var SECOES = [
-    { chave: 'objetivos', nome: '🎯 Objetivos' },
-    { chave: 'estudos', nome: '📚 Estudos' },
-    { chave: 'autocuidado', nome: '✨ Autocuidado' },
-    { chave: 'espiritual', nome: '🕊️ Vida espiritual' }
+    { chave: 'objetivos', nome: 'Objetivos' },
+    { chave: 'estudos', nome: 'Estudos' },
+    { chave: 'autocuidado', nome: 'Autocuidado' },
+    { chave: 'espiritual', nome: 'Vida espiritual' }
   ];
 
   App.views = App.views || {};

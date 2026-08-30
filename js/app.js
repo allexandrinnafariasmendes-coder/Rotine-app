@@ -7,7 +7,7 @@
 
   var ROTAS = ['hoje', 'agenda', 'tarefas', 'estudos', 'mais', 'objetivos', 'habitos',
                'autocuidado', 'espiritual', 'semana', 'assistente', 'ajustes'];
-  var ABAS = ['hoje', 'agenda', 'tarefas', 'estudos', 'mais'];
+  var ABAS = ['hoje', 'agenda', 'tarefas', 'estudos', 'assistente', 'mais'];
 
   var telaEl, tituloEl, abasEl;
   var rotaAnterior = null;
@@ -26,8 +26,26 @@
     return { nome: ROTAS.indexOf(nome) !== -1 ? nome : 'hoje', params: params };
   }
 
+  function temaEscuro() {
+    var t = store.estado.ajustes.tema || 'auto';
+    if (t === 'escuro') return true;
+    if (t === 'claro') return false;
+    return !!(window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  }
+
+  /* O acento da interface é a cor litúrgica do dia. */
   function aplicarTema() {
-    document.documentElement.setAttribute('data-theme', store.estado.ajustes.tema || 'auto');
+    var raiz = document.documentElement;
+    raiz.setAttribute('data-theme', store.estado.ajustes.tema || 'auto');
+
+    var p = App.motor.paletaLiturgica(App.util.hoje(), temaEscuro());
+    raiz.style.setProperty('--sazonal', p.cores[0]);
+    raiz.style.setProperty('--sazonal-suave', p.cores[1]);
+    raiz.style.setProperty('--sazonal-forte', p.cores[2]);
+    raiz.setAttribute('data-tempo', p.tempo);
+
+    var selo = document.getElementById('tempoLiturgico');
+    if (selo) selo.textContent = p.tempo;
   }
 
   function render() {
@@ -55,7 +73,6 @@
       else a.removeAttribute('aria-current');
     });
 
-    document.getElementById('fabAssistente').hidden = rota.nome === 'assistente';
   }
 
   function iniciar() {
@@ -75,9 +92,12 @@
       App.ui.aviso('Tema: ' + proximo);
     });
 
-    document.getElementById('fabAssistente').addEventListener('click', function () {
-      location.hash = '#/assistente';
-    });
+    if (window.matchMedia) {
+      var escura = window.matchMedia('(prefers-color-scheme: dark)');
+      var aoTrocar = function () { aplicarTema(); };
+      if (escura.addEventListener) escura.addEventListener('change', aoTrocar);
+      else if (escura.addListener) escura.addListener(aoTrocar);
+    }
 
     window.addEventListener('hashchange', function () {
       render();

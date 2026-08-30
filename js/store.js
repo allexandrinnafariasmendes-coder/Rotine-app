@@ -9,31 +9,32 @@
   var CHAVE_ANTIGA = 'minha-rotina:v1';
   var VERSAO = 2;
 
-  /* Áreas da vida — usadas em toda a interface (cor, ícone e agrupamento). */
+  /* Áreas da vida. As cores são pigmentos discretos: aparecem só como
+     um ponto ao lado do nome, nunca como fundo. */
   var AREAS = {
-    sono:        { nome: 'Sono',         emoji: '😴', cor: '#8E9BC4', grupo: 'recuperar' },
-    escola:      { nome: 'Escola',       emoji: '🎒', cor: '#8FB0C7', grupo: 'obrigacao' },
-    estudo:      { nome: 'Estudo',       emoji: '📚', cor: '#7FA3B8', grupo: 'obrigacao' },
-    exercicio:   { nome: 'Exercício',    emoji: '🏃', cor: '#8FA98A', grupo: 'corpo' },
-    compromisso: { nome: 'Compromisso',  emoji: '📅', cor: '#C0A0B4', grupo: 'obrigacao' },
-    autocuidado: { nome: 'Autocuidado',  emoji: '✨', cor: '#E0A9A9', grupo: 'corpo' },
-    alimentacao: { nome: 'Alimentação',  emoji: '🍽️', cor: '#D9B48F', grupo: 'corpo' },
-    descanso:    { nome: 'Descanso',     emoji: '🌿', cor: '#A8B5A2', grupo: 'recuperar' },
-    hobby:       { nome: 'Hobby',        emoji: '🎨', cor: '#C7B7DC', grupo: 'recuperar' },
-    casa:        { nome: 'Casa',         emoji: '🏡', cor: '#C9B79C', grupo: 'obrigacao' },
-    espiritual:  { nome: 'Espiritual',   emoji: '🕊️', cor: '#B6C6D8', grupo: 'alma' },
-    pessoal:     { nome: 'Pessoal',      emoji: '💛', cor: '#D9C08C', grupo: 'recuperar' }
+    sono:        { nome: 'Sono',         cor: '#7B85A6', grupo: 'recuperar' },
+    escola:      { nome: 'Escola',       cor: '#6E90A8', grupo: 'obrigacao' },
+    estudo:      { nome: 'Estudo',       cor: '#5E82A0', grupo: 'obrigacao' },
+    exercicio:   { nome: 'Exercício',    cor: '#7A9472', grupo: 'corpo' },
+    compromisso: { nome: 'Compromisso',  cor: '#9A7286', grupo: 'obrigacao' },
+    autocuidado: { nome: 'Autocuidado',  cor: '#B6828A', grupo: 'corpo' },
+    alimentacao: { nome: 'Alimentação',  cor: '#B08A55', grupo: 'corpo' },
+    descanso:    { nome: 'Descanso',     cor: '#7E9A80', grupo: 'recuperar' },
+    hobby:       { nome: 'Hobby',        cor: '#8E7DA6', grupo: 'recuperar' },
+    casa:        { nome: 'Casa',         cor: '#9C845F', grupo: 'obrigacao' },
+    espiritual:  { nome: 'Espiritual',   cor: '#6F80A0', grupo: 'alma' },
+    pessoal:     { nome: 'Pessoal',      cor: '#A98F4E', grupo: 'recuperar' }
   };
 
   /* Áreas que contam como recuperação — o app cobra a presença delas no dia. */
   var AREAS_DESCANSO = ['descanso', 'hobby', 'sono', 'pessoal'];
 
   var AREAS_OBJETIVO = {
-    estudos: { nome: 'Estudos', emoji: '📚' },
-    futuro:  { nome: 'Futuro', emoji: '🩺' },
-    eu:      { nome: 'Eu', emoji: '💆‍♀️' },
-    casa:    { nome: 'Casa', emoji: '🏡' },
-    vida:    { nome: 'Vida pessoal', emoji: '❤️' }
+    estudos: { nome: 'Estudos' },
+    futuro:  { nome: 'Futuro' },
+    eu:      { nome: 'Eu' },
+    casa:    { nome: 'Casa' },
+    vida:    { nome: 'Vida pessoal' }
   };
 
   var ouvintes = [];
@@ -128,12 +129,12 @@
           passos: [{ id: u.id(), titulo: 'Manter o skincare por duas semanas', feito: false }], arquivado: false }
       ],
       disciplinas: [
-        { id: bio, nome: 'Biologia', emoji: '🧬', topicos: [
+        { id: bio, nome: 'Biologia', topicos: [
           { id: tMendel, nome: 'Leis de Mendel', assunto: 'Genética', status: 'estudando', ultimaRevisao: null, minutos: 0 },
           { id: tHeredo, nome: 'Heredogramas', assunto: 'Genética', status: 'nao', ultimaRevisao: null, minutos: 0 },
           { id: tProb, nome: 'Probabilidade', assunto: 'Genética', status: 'nao', ultimaRevisao: null, minutos: 0 }
         ] },
-        { id: mat, nome: 'Matemática', emoji: '📐', topicos: [
+        { id: mat, nome: 'Matemática', topicos: [
           { id: tAfim, nome: 'Função afim', assunto: 'Funções', status: 'ok', ultimaRevisao: u.somarDias(h, -4), minutos: 50 },
           { id: tQuad, nome: 'Função quadrática', assunto: 'Funções', status: 'nao', ultimaRevisao: null, minutos: 0 }
         ] }
@@ -229,7 +230,7 @@
       return {
         id: x.id || u.id(),
         nome: String(x.nome || 'Disciplina'),
-        emoji: x.emoji || '📘',
+        emoji: x.emoji || '',
         topicos: (x.topicos || []).map(function (t) {
           return {
             id: t.id || u.id(),
@@ -313,7 +314,7 @@
       var ritual = { id: u.id(), titulo: 'Meus hábitos', periodo: 'qualquer', hora: '', dias: [0, 1, 2, 3, 4, 5, 6], itens: [] };
       var mapaItem = {};
       antigo.habitos.forEach(function (h) {
-        var item = { id: u.id(), titulo: (h.emoji ? h.emoji + ' ' : '') + h.titulo };
+        var item = { id: u.id(), titulo: h.titulo };
         mapaItem[h.id] = item.id;
         ritual.itens.push(item);
       });

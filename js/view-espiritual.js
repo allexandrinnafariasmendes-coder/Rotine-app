@@ -84,10 +84,10 @@
       var diario = esp.diario.slice().sort(function (a, b) { return a.data < b.data ? 1 : -1; }).slice(0, 8);
 
       return el('div', {}, [
-        el('div.cartao', { style: 'margin-top:8px;border-left:3px solid ' + lit.cor }, [
-          el('div.mini.fraco', { text: 'TEMPO LITÚRGICO' }),
-          el('div.item__titulo', { style: 'font-family:var(--serif);font-size:18px;margin-top:2px', text: lit.tempo }),
-          el('div.mini.sub', { text: lit.nota })
+        el('div.cartao', { style: 'margin-top:12px;border-left:3px solid var(--sazonal)' }, [
+          el('div.versalete.fraco', { text: 'Tempo litúrgico' }),
+          el('div', { style: 'font-family:var(--serif);font-size:22px;margin-top:6px;color:var(--sazonal-forte)', text: lit.tempo }),
+          el('div.mini.sub', { style: 'font-family:var(--serif);font-style:italic;margin-top:2px', text: lit.nota })
         ]),
 
         ui.tituloSecao('Práticas de hoje'),

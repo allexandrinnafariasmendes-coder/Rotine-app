@@ -259,6 +259,32 @@
     ]);
   }
 
+  /* Ornamento tipográfico: filete, losango, filete. Usado com parcimônia. */
+  function ornamento() {
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('viewBox', '0 0 96 12');
+    svg.setAttribute('aria-hidden', 'true');
+
+    function traco(x1, x2) {
+      var l = document.createElementNS(ns, 'line');
+      l.setAttribute('x1', x1); l.setAttribute('y1', '6');
+      l.setAttribute('x2', x2); l.setAttribute('y2', '6');
+      l.setAttribute('stroke', 'currentColor');
+      l.setAttribute('stroke-width', '1');
+      return l;
+    }
+    var losango = document.createElementNS(ns, 'path');
+    losango.setAttribute('d', 'M48 2.4l3.4 3.6L48 9.6 44.6 6z');
+    losango.setAttribute('fill', 'currentColor');
+
+    svg.appendChild(traco(6, 40));
+    svg.appendChild(losango);
+    svg.appendChild(traco(56, 90));
+
+    return el('div.ornamento', {}, [svg]);
+  }
+
   function vazio(titulo, texto) {
     return el('div.vazio', {}, [el('strong', { text: titulo }), texto || '']);
   }
@@ -291,6 +317,6 @@
     iniciar: iniciar, aviso: aviso, fechar: fechar,
     abrirFormulario: abrirFormulario, abrirPainel: abrirPainel,
     ponto: ponto, etiqueta: etiqueta, itemLinha: itemLinha, linhaCheck: linhaCheck,
-    tituloSecao: tituloSecao, vazio: vazio, avisoCartao: avisoCartao, barraProgresso: barraProgresso
+    tituloSecao: tituloSecao, ornamento: ornamento, vazio: vazio, avisoCartao: avisoCartao, barraProgresso: barraProgresso
   };
 })();

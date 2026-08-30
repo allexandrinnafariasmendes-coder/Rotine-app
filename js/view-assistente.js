@@ -212,7 +212,7 @@
         el('div', {}, [
           el('div.item__titulo', { text: t.titulo }),
           el('div.item__meta', {}, [
-            el('span', { text: new Array(t.prioridade + 1).join('⭐') }),
+            el('span', { style: 'color:var(--rubrica)', text: new Array(t.prioridade + 1).join('★') }),
             el('span', { text: u.duracaoTexto(t.estimativa) })
           ])
         ]),

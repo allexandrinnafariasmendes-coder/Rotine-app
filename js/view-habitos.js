@@ -6,10 +6,10 @@
   var u = App.util, el = u.el, ui = App.ui;
 
   var PERIODOS = [
-    { valor: 'manha', rotulo: '☀️ Manhã' },
-    { valor: 'tarde', rotulo: '🌤️ Tarde' },
-    { valor: 'noite', rotulo: '🌙 Noite' },
-    { valor: 'qualquer', rotulo: '🕊️ Qualquer hora' }
+    { valor: 'manha', rotulo: 'Manhã' },
+    { valor: 'tarde', rotulo: 'Tarde' },
+    { valor: 'noite', rotulo: 'Noite' },
+    { valor: 'qualquer', rotulo: 'Qualquer hora' }
   ];
 
   function formulario(store, ritual) {

@@ -8,10 +8,10 @@
   var dia = null;
 
   var PERIODOS = [
-    { chave: 'manha', emoji: '☀️', nome: 'Manhã' },
-    { chave: 'tarde', emoji: '🌤️', nome: 'Tarde' },
-    { chave: 'noite', emoji: '🌙', nome: 'Noite' },
-    { chave: 'flex', emoji: '🕊️', nome: 'Sem horário' }
+    { chave: 'manha', nome: 'Manhã' },
+    { chave: 'tarde', nome: 'Tarde' },
+    { chave: 'noite', nome: 'Noite' },
+    { chave: 'flex', nome: 'Sem horário' }
   ];
 
   function estrelas(n) { return new Array(n + 1).join('★'); }
@@ -140,7 +140,6 @@
 
       out.push(el('div.periodo', {}, [
         el('div.periodo__titulo', {}, [
-          el('span', { text: p.emoji }),
           el('span', { text: p.nome }),
           el('em', { text: feitos + '/' + lista.length })
         ]),
@@ -186,7 +185,7 @@
     }
 
     return [
-      ui.tituloSecao('✅ Tarefas', u.plural(tarefas.length + atrasadas.length, 'item', 'itens')),
+      ui.tituloSecao('Tarefas', u.plural(tarefas.length + atrasadas.length, 'item', 'itens')),
       el('div', {}, atrasadas.map(function (t) { return linha(t, true); })
         .concat(tarefas.map(function (t) { return linha(t, false); })))
     ];
@@ -199,7 +198,7 @@
     if (!pendentes.length && !feitosHoje.length) return [];
 
     return [
-      ui.tituloSecao('✨ Autocuidado de hoje'),
+      ui.tituloSecao('Autocuidado de hoje'),
       el('div.cartao', {}, [
         el('div.lista-check', {}, pendentes.concat(feitosHoje).map(function (c) {
           var feito = store.feito('cuidados', c.id, dia);
@@ -223,7 +222,7 @@
     var lit = motor.tempoLiturgico(dia);
 
     return [
-      ui.tituloSecao('🕊️ Vida espiritual', el('span.mini.fraco', { text: lit.tempo })),
+      ui.tituloSecao('Vida espiritual', el('span', { style: 'color:var(--sazonal-forte)', text: lit.tempo })),
       el('div.cartao', {}, [
         el('div.lista-check', {}, praticas.map(function (p) {
           return ui.linhaCheck(p.titulo, store.feito('praticas', p.id, dia), function () {
@@ -247,10 +246,10 @@
         valores: rev || { humor: 'bem', sono: 8, nota: '' },
         campos: [
           { nome: 'humor', rotulo: 'Como foi o seu dia?', tipo: 'opcoes', opcoes: [
-            { valor: 'leve', rotulo: '🌿 Leve' },
-            { valor: 'bem', rotulo: '🙂 Bem' },
-            { valor: 'corrido', rotulo: '😮‍💨 Corrido' },
-            { valor: 'dificil', rotulo: '🌧️ Difícil' }
+            { valor: 'leve', rotulo: 'Leve' },
+            { valor: 'bem', rotulo: 'Bem' },
+            { valor: 'corrido', rotulo: 'Corrido' },
+            { valor: 'dificil', rotulo: 'Difícil' }
           ] },
           { nome: 'sono', rotulo: 'Horas de sono na noite passada', tipo: 'numero', min: 0, max: 14, passo: 0.5 },
           { nome: 'nota', rotulo: 'Algo que você queira guardar', tipo: 'texto-longo',
@@ -294,6 +293,7 @@
         .concat(tarefasDoDia(store, motor))
         .concat(cuidadosDoDia(store))
         .concat(espiritualDoDia(store, motor));
+      filhos.push(ui.ornamento());
       filhos.push(revisaoDoDia(store));
 
       return el('div', {}, filhos.filter(Boolean));

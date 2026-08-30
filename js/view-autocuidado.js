@@ -6,11 +6,11 @@
   var u = App.util, el = u.el, ui = App.ui;
 
   var CATEGORIAS = {
-    pele: { nome: 'Pele', emoji: '🧴' },
-    cabelo: { nome: 'Cabelo', emoji: '💇‍♀️' },
-    unhas: { nome: 'Unhas', emoji: '💅' },
-    corpo: { nome: 'Corpo e saúde', emoji: '🌸' },
-    organizacao: { nome: 'Organização', emoji: '🧺' }
+    pele: { nome: 'Pele' },
+    cabelo: { nome: 'Cabelo' },
+    unhas: { nome: 'Unhas' },
+    corpo: { nome: 'Corpo e saúde' },
+    organizacao: { nome: 'Organização' }
   };
 
   var RITMOS = [
@@ -29,7 +29,7 @@
       campos: [
         { nome: 'titulo', rotulo: 'Cuidado', tipo: 'texto', obrigatorio: true, dica: 'Ex.: hidratação capilar' },
         { nome: 'categoria', rotulo: 'Categoria', tipo: 'selecao', opcoes: Object.keys(CATEGORIAS).map(function (k) {
-          return { valor: k, rotulo: CATEGORIAS[k].emoji + ' ' + CATEGORIAS[k].nome };
+          return { valor: k, rotulo: CATEGORIAS[k].nome };
         }) },
         { nome: 'intervalo', rotulo: 'Com que frequência', tipo: 'opcoes', opcoes: RITMOS },
         { nome: 'personalizado', rotulo: 'Ou a cada quantos dias', tipo: 'numero', min: 0, max: 365,
@@ -64,9 +64,10 @@
     var cat = CATEGORIAS[c.categoria] || CATEGORIAS.pele;
 
     return ui.itemLinha({
-      titulo: cat.emoji + '  ' + c.titulo,
+      titulo: c.titulo,
       feito: feitoHoje,
       meta: [
+        ui.etiqueta(cat.nome),
         el('span', { text: textoRitmo(c.intervalo) }),
         feitoHoje ? ui.etiqueta('feito hoje', 'salvia')
           : (atrasado ? ui.etiqueta('desde ' + u.dataCurta(proxima), 'rosa')
@@ -102,7 +103,7 @@
           onclick: function () { formulario(store, null); }
         }),
 
-        ui.tituloSecao('✨ Para hoje', u.plural(paraHoje.length, 'item', 'itens')),
+        ui.tituloSecao('Para hoje', u.plural(paraHoje.length, 'item', 'itens')),
         paraHoje.length
           ? el('div', {}, paraHoje.map(function (c) { return linha(store, c); }))
           : ui.vazio('Nada pendente hoje', 'Seus cuidados estão em dia.'),

@@ -65,16 +65,21 @@ app são migrados automaticamente na primeira abertura.
 
 ## Aparência
 
-A identidade é a **Papel & Rosa**: fundo de papel, rosa antigo como cor
-principal, verde sálvia no que já foi concluído, azul claro nos compromissos.
-Sem sombras — o que separa os blocos são linhas finas, cantos quase retos e
-espaço — com títulos em serifada e tema claro e escuro.
+A identidade é a **Missal**: papel marfim, tinta preta, rubrica vermelha — é
+dessa palavra que vem "rubrica" — e filete dourado, com tipografia de livro,
+versaletes nos rótulos e nenhum emoji na interface. Não há sombras: o que
+separa os blocos são linhas finas e espaço, como numa página impressa.
 
-Tudo isso vive nas variáveis do topo de `assets/styles.css` (cores, fonte dos
-títulos, arredondamento e sombra): mudar uma linha ali muda o app inteiro, e o
-mesmo conjunto se repete no bloco do tema escuro. As cores das áreas da vida —
-os pontinhos ao lado de "Estudo", "Descanso", "Autocuidado" — ficam em
-`js/store.js`, no início do arquivo.
+**O acento da interface segue o tempo litúrgico**, calculado offline a partir
+da data da Páscoa: verde no Tempo Comum, violeta no Advento e na Quaresma,
+ouro no Natal e na Páscoa, rubro em Pentecostes. A cor entra nos botões, nas
+marcações, na barra do dia e na aba ativa — e o tempo em curso aparece no
+alto da tela. Existe em versão clara e escura.
+
+Tudo isso vive nas variáveis do topo de `assets/styles.css`; as cores
+litúrgicas ficam em `PALETA`, dentro de `js/motor.js`, e são aplicadas por
+`js/app.js` a cada abertura. As cores das áreas da vida — os pontos ao lado
+de "Estudo", "Descanso", "Autocuidado" — estão no início de `js/store.js`.
 
 ## Como o projeto é feito
 
@@ -82,7 +87,7 @@ HTML, CSS e JavaScript puro — sem dependências, sem build.
 
 ```
 index.html              estrutura, barra de navegação e painel
-assets/styles.css       identidade visual "Papel & Rosa" (tokens no topo do arquivo)
+assets/styles.css       identidade visual "Missal" (tokens no topo do arquivo)
 js/util.js              datas, horários, formatação e criação de elementos
 js/store.js             modelo de dados, persistência e migração
 js/motor.js             inteligência: monta o dia, analisa, sugere, interpreta frases

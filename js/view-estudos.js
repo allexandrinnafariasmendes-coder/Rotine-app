@@ -19,11 +19,9 @@
     var novo = !disc;
     ui.abrirFormulario({
       titulo: novo ? 'Nova disciplina' : 'Editar disciplina',
-      valores: disc || { nome: '', emoji: '📘' },
+      valores: disc || { nome: '' },
       campos: [
-        { nome: 'nome', rotulo: 'Disciplina', tipo: 'texto', obrigatorio: true, dica: 'Ex.: Biologia' },
-        { nome: 'emoji', rotulo: 'Ícone', tipo: 'selecao', opcoes: ['📘', '🧬', '📐', '🧪', '🌎', '📜', '✍️', '🗣️', '💻', '🎨']
-          .map(function (e) { return { valor: e, rotulo: e }; }) }
+        { nome: 'nome', rotulo: 'Disciplina', tipo: 'texto', obrigatorio: true, dica: 'Ex.: Biologia' }
       ],
       aoExcluir: novo ? null : function () {
         store.commit(function (s) { s.disciplinas = s.disciplinas.filter(function (d) { return d.id !== disc.id; }); });
@@ -32,8 +30,8 @@
       },
       aoSalvar: function (v) {
         store.commit(function (s) {
-          if (novo) s.disciplinas.push({ id: u.id(), nome: v.nome, emoji: v.emoji, topicos: [] });
-          else Object.assign(disc, { nome: v.nome, emoji: v.emoji });
+          if (novo) s.disciplinas.push({ id: u.id(), nome: v.nome, emoji: '', topicos: [] });
+          else Object.assign(disc, { nome: v.nome });
         });
         App.render();
       }
@@ -120,7 +118,7 @@
     relogio = setInterval(tique, 1000);
 
     return el('div.cronometro', {}, [
-      el('div.cronometro__nome', { text: (d ? d.emoji + ' ' + d.nome + ' · ' : '') + (t ? t.nome : 'Estudo') }),
+      el('div.cronometro__nome', { text: (d ? d.nome + ' · ' : '') + (t ? t.nome : 'Estudo') }),
       mostrador,
       el('div.linha-btn', {}, [
         el('button.btn.btn--p', { type: 'button', text: 'Encerrar e salvar', onclick: function () { encerrarSessao(store, true); } }),
@@ -143,7 +141,7 @@
 
     var escolhidos = pendentes.map(function (p) { return p.top.id; });
     var lista = el('div.pilha.pilha--junta', {}, pendentes.map(function (p) {
-      return ui.linhaCheck(p.disc.emoji + ' ' + p.top.nome, true, function () { /* trocado abaixo */ });
+      return ui.linhaCheck(p.top.nome, true, function () { /* trocado abaixo */ });
     }));
 
     /* Reconstrói a lista para refletir a seleção. */
@@ -151,7 +149,7 @@
       lista.innerHTML = '';
       pendentes.forEach(function (p) {
         var dentro = escolhidos.indexOf(p.top.id) !== -1;
-        lista.appendChild(ui.linhaCheck(p.disc.emoji + ' ' + p.top.nome, dentro, function () {
+        lista.appendChild(ui.linhaCheck(p.disc.nome + ' · ' + p.top.nome, dentro, function () {
           var i = escolhidos.indexOf(p.top.id);
           if (i === -1) escolhidos.push(p.top.id); else escolhidos.splice(i, 1);
           desenhar();
@@ -238,7 +236,7 @@
 
       var filhos = [
         el('div.arvore__disciplina', { style: 'cursor:pointer', onclick: function () { formDisciplina(store, d); } }, [
-          el('span', { style: 'font-size:20px', text: d.emoji }),
+          el('span.monograma', { text: (d.nome || '?').charAt(0).toUpperCase() }),
           el('div', { style: 'flex:1' }, [
             el('div.item__titulo', { text: d.nome }),
             el('div.item__meta', {}, [el('span', { text: emDia + ' de ' + d.topicos.length + ' em dia' })])

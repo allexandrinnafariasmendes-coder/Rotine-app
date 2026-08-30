@@ -694,6 +694,18 @@
     return u.toISO(new Date(ano, mes - 1, dia));
   }
 
+  /* Cores litúrgicas: violeta (Advento/Quaresma), ouro (Natal/Páscoa),
+     rubro (Pentecostes) e verde (Tempo Comum), em versões para papel e
+     para tinta escura. São elas que dão o acento da interface. */
+  var PALETA = {
+    Advento:        { claro: ['#5A4E77', '#EFEDF4', '#493E63'], escuro: ['#A99CC9', '#232037', '#BDB2DA'] },
+    Natal:          { claro: ['#8A6D2F', '#F8F1E1', '#6F5722'], escuro: ['#C9A961', '#2A2416', '#DCC07E'] },
+    Quaresma:       { claro: ['#574A63', '#EEECF1', '#443A4E'], escuro: ['#9E93AE', '#211E27', '#B4A9C3'] },
+    'Páscoa':       { claro: ['#93722F', '#F9F2E0', '#775B21'], escuro: ['#D2B268', '#2B2517', '#E3C888'] },
+    Pentecostes:    { claro: ['#8C2F39', '#F6EDEA', '#73242D'], escuro: ['#C4737B', '#2C1F20', '#D68D94'] },
+    'Tempo Comum':  { claro: ['#4C6650', '#EDF1EA', '#3C5240'], escuro: ['#8FA98A', '#22271F', '#A6BCA0'] }
+  };
+
   function tempoLiturgico(iso) {
     var data = iso || u.hoje();
     var ano = u.fromISO(data).getFullYear();
@@ -706,11 +718,29 @@
     var dowNatal = u.diaDaSemana(natal);
     var advento = u.somarDias(natal, -(dowNatal === 0 ? 28 : 21 + dowNatal));
 
-    if (data >= advento && data < natal) return { tempo: 'Advento', cor: '#7E6FA8', nota: 'Tempo de espera e preparação.' };
-    if (data >= natal || data <= ano + '-01-06') return { tempo: 'Natal', cor: '#C9A227', nota: 'Tempo de alegria.' };
-    if (data >= cinzas && data < p) return { tempo: 'Quaresma', cor: '#7E6FA8', nota: 'Tempo de silêncio e conversão.' };
-    if (data >= p && data <= pentecostes) return { tempo: 'Páscoa', cor: '#C9A227', nota: 'Tempo de alegria e vida nova.' };
-    return { tempo: 'Tempo Comum', cor: '#7E9A6F', nota: 'Tempo de caminhada cotidiana.' };
+    var tempo, nota;
+    if (data === pentecostes) { tempo = 'Pentecostes'; nota = 'Solenidade do Espírito Santo.'; }
+    else if (data >= advento && data < natal) { tempo = 'Advento'; nota = 'Tempo de espera e preparação.'; }
+    else if (data >= natal || data <= ano + '-01-06') { tempo = 'Natal'; nota = 'Tempo de alegria.'; }
+    else if (data >= cinzas && data < p) { tempo = 'Quaresma'; nota = 'Tempo de silêncio e conversão.'; }
+    else if (data >= p && data <= pentecostes) { tempo = 'Páscoa'; nota = 'Tempo de vida nova.'; }
+    else { tempo = 'Tempo Comum'; nota = 'Tempo de caminhada cotidiana.'; }
+
+    var par = PALETA[tempo] || PALETA['Tempo Comum'];
+    return {
+      tempo: tempo,
+      nota: nota,
+      cor: par.claro[0],
+      paleta: par,
+      /* datas de referência, úteis para quem quiser conferir */
+      pascoa: p, cinzas: cinzas, pentecostes: pentecostes, advento: advento
+    };
+  }
+
+  /* Trio [cor, suave, forte] para o tema em uso. */
+  function paletaLiturgica(iso, escuro) {
+    var lit = tempoLiturgico(iso);
+    return { tempo: lit.tempo, cores: escuro ? lit.paleta.escuro : lit.paleta.claro };
   }
 
   App.motor = {
@@ -735,6 +765,7 @@
     resumoSemana: resumoSemana,
     leituraDaSemana: leituraDaSemana,
     fraseDoDia: fraseDoDia,
-    tempoLiturgico: tempoLiturgico
+    tempoLiturgico: tempoLiturgico,
+    paletaLiturgica: paletaLiturgica
   };
 })();

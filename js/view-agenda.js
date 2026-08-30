@@ -9,7 +9,7 @@
 
   function opcoesArea(store) {
     return Object.keys(store.AREAS).map(function (k) {
-      return { valor: k, rotulo: store.AREAS[k].emoji + ' ' + store.AREAS[k].nome };
+      return { valor: k, rotulo: store.AREAS[k].nome };
     });
   }
 

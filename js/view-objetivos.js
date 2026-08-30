@@ -15,7 +15,7 @@
       campos: [
         { nome: 'titulo', rotulo: 'Objetivo', tipo: 'texto', obrigatorio: true, dica: 'Ex.: ir bem na prova de biologia' },
         { nome: 'area', rotulo: 'Área da vida', tipo: 'selecao', opcoes: Object.keys(store.AREAS_OBJETIVO).map(function (k) {
-          return { valor: k, rotulo: store.AREAS_OBJETIVO[k].emoji + ' ' + store.AREAS_OBJETIVO[k].nome };
+          return { valor: k, rotulo: store.AREAS_OBJETIVO[k].nome };
         }) },
         { nome: 'prazo', rotulo: 'Prazo', tipo: 'data', ajuda: 'Opcional — objetivo sem prazo também vale' },
         { nome: 'passos', rotulo: 'Passos', tipo: 'lista', ajuda: 'Quebre o objetivo em ações pequenas' },
@@ -111,7 +111,7 @@
         if (!daArea.length) return null;
         var a = store.AREAS_OBJETIVO[chave];
         return el('div', {}, [
-          ui.tituloSecao(a.emoji + ' ' + a.nome, u.plural(daArea.length, 'objetivo', 'objetivos')),
+          ui.tituloSecao(a.nome, u.plural(daArea.length, 'objetivo', 'objetivos')),
           el('div.pilha', {}, daArea.map(function (o) { return cartao(store, o); }))
         ]);
       }).filter(Boolean);

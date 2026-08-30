@@ -65,7 +65,7 @@
         ]),
 
         el('div.cartao', { style: 'margin-top:6px' }, [
-          el('div.item__titulo', { style: 'font-family:var(--serif);font-size:18px', text: '🌸 Como foi sua semana' }),
+          el('div.item__titulo', { style: 'font-size:19px', text: 'Como foi sua semana' }),
           el('div.pilha.pilha--junta', { style: 'margin-top:8px' },
             motor.leituraDaSemana(r).map(function (f) { return el('p.mini.sub', { text: f }); }))
         ]),
