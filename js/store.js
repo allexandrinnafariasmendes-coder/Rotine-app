@@ -75,6 +75,8 @@
      Dias: 0 = domingo … 6 = sábado. */
   function exemplo() {
     var todos = [0, 1, 2, 3, 4, 5, 6];
+    var semana = [1, 2, 3, 4, 5];
+    var fimDeSemana = [0, 6];
     var aula = [1, 3, 5];
     var estudo = [2, 4];
 
@@ -87,7 +89,7 @@
       blocos: [
         bloco('Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Água e alongamento leve.'),
         bloco('Oração da manhã · Leitura espiritual · Terço', '05:30', 30, todos, 'espiritual', false, ''),
-        bloco('Missa', '06:00', 30, todos, 'espiritual', true, ''),
+        bloco('Missa', '06:00', 30, fimDeSemana, 'espiritual', true, ''),
         bloco('Café da manhã · Arrumar-se', '06:30', 30, todos, 'alimentacao', false, 'Preparar-se para o dia.'),
         bloco('Revisão do dia', '07:00', 30, todos, 'pessoal', false, ''),
         bloco('Saída · Deslocamento · Organização', '07:30', 30, todos, 'pessoal', false, ''),
@@ -107,8 +109,11 @@
         bloco('Estudos pessoais / Projetos', '13:30', 240, [6], 'estudo', false, ''),
         bloco('Tempo com família · Lazer · Leitura', '13:30', 240, [0], 'pessoal', false, ''),
 
-        bloco('Treino (ou caminhada)', '18:00', 30, aula, 'exercicio', false, ''),
-        bloco('Oração / Terço · Adoração', '18:00', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
+        /* Nos dias de semana a Missa é às 18h; treino e adoração passam
+           para as 17h30, logo depois das aulas. */
+        bloco('Treino (ou caminhada)', '17:30', 30, aula, 'exercicio', false, ''),
+        bloco('Oração / Terço · Adoração', '17:30', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
+        bloco('Missa', '18:00', 30, semana, 'espiritual', true, ''),
         bloco('Atividade física leve ou lazer', '18:00', 30, [6], 'exercicio', false, ''),
         bloco('Passeio · Natureza · Atividade física', '18:00', 30, [0], 'exercicio', false, ''),
 
