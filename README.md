@@ -63,13 +63,26 @@ Em **Ajustes → Backup** dá para baixar um `.json` com toda a rotina e o hist�
 e restaurá-lo depois, inclusive em outro aparelho. Dados da primeira versão do
 app são migrados automaticamente na primeira abertura.
 
+## Aparência
+
+A identidade é a **Papel & Rosa**: fundo de papel, rosa antigo como cor
+principal, verde sálvia no que já foi concluído, azul claro nos compromissos.
+Sem sombras — o que separa os blocos são linhas finas, cantos quase retos e
+espaço — com títulos em serifada e tema claro e escuro.
+
+Tudo isso vive nas variáveis do topo de `assets/styles.css` (cores, fonte dos
+títulos, arredondamento e sombra): mudar uma linha ali muda o app inteiro, e o
+mesmo conjunto se repete no bloco do tema escuro. As cores das áreas da vida —
+os pontinhos ao lado de "Estudo", "Descanso", "Autocuidado" — ficam em
+`js/store.js`, no início do arquivo.
+
 ## Como o projeto é feito
 
 HTML, CSS e JavaScript puro — sem dependências, sem build.
 
 ```
 index.html              estrutura, barra de navegação e painel
-assets/styles.css       identidade visual (creme, rosa suave, sálvia, azul claro)
+assets/styles.css       identidade visual "Papel & Rosa" (tokens no topo do arquivo)
 js/util.js              datas, horários, formatação e criação de elementos
 js/store.js             modelo de dados, persistência e migração
 js/motor.js             inteligência: monta o dia, analisa, sugere, interpreta frases
