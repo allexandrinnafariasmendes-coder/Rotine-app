@@ -9,18 +9,30 @@ nada para lugar nenhum**: tudo fica salvo no armazenamento do próprio aparelho.
 
 ## Como abrir
 
-**Mais simples:** baixe a pasta e abra `index.html` no navegador.
+**Arquivo único (mais simples).** `minha-rotina.html` tem o app inteiro dentro
+de um arquivo só — estilo, código e ícone. Baixe, dê dois cliques e pronto:
+funciona sem internet e sem instalar nada. Para gerá-lo de novo depois de mexer
+no código:
 
-**Como aplicativo no celular (recomendado):** publique a pasta em qualquer
-endereço `https` — o GitHub Pages serve, basta ativar nas configurações do
-repositório —, abra o link no celular e escolha *Adicionar à tela de início*.
-Ele passa a abrir em tela cheia e funciona offline.
+```bash
+python3 ferramentas/gerar-arquivo-unico.py
+```
+
+**No celular, como aplicativo.** Publique a pasta em qualquer endereço `https`
+— o GitHub Pages serve: *Settings → Pages → Deploy from a branch* — abra o link
+no celular e escolha *Adicionar à tela de início*. Assim ele abre em tela cheia,
+guarda os dados no aparelho e funciona offline (é aqui que o service worker e o
+manifesto entram; no arquivo único eles não são usados).
 
 **Localmente com servidor:**
 
 ```bash
 python3 -m http.server 8000    # depois abra http://localhost:8000
 ```
+
+Em qualquer um dos casos os dados ficam no navegador que abriu o app — e cada
+forma de abrir tem seu próprio armazenamento. Para levar a rotina de uma para a
+outra, use **Ajustes → Backup**: baixe o `.json` em uma e restaure na outra.
 
 ## As áreas
 
@@ -92,6 +104,7 @@ HTML, CSS e JavaScript puro — sem dependências, sem build.
 
 ```
 index.html              estrutura, barra de navegação e painel
+minha-rotina.html       o app inteiro em um arquivo só (gerado)
 assets/styles.css       identidade visual "Missal" (tokens no topo do arquivo)
 js/util.js              datas, horários, formatação e criação de elementos
 js/store.js             modelo de dados, persistência e migração
@@ -101,6 +114,7 @@ js/view-*.js            uma tela por arquivo
 js/app.js               rotas por hash, renderização e tema
 sw.js                   cache para funcionar offline
 manifest.webmanifest    instalação como aplicativo
+ferramentas/            gerador do arquivo único
 ```
 
 Cada tela é uma função `render(store)` que devolve um elemento; toda alteração
