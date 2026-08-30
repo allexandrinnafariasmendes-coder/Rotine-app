@@ -1,11 +1,12 @@
 /* Cache simples para o app abrir sem internet. */
-var CACHE = 'minha-rotina-v3';
+var CACHE = 'minha-rotina-v4';
 var ARQUIVOS = [
   './',
   './index.html',
   './manifest.webmanifest',
   './assets/styles.css',
   './assets/icon.svg',
+  './assets/icon-180.png',
   './assets/icon-maskable.svg',
   './js/util.js',
   './js/store.js',
