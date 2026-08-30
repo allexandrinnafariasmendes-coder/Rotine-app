@@ -6,6 +6,14 @@
   var u = App.util;
 
   var CHAVE = 'minha-rotina:v2';
+
+  /* Versão da rotina "Fé, estudo e disciplina". Quando ela muda, o app avisa
+     e oferece aplicar a mudança sem apagar marcações, tarefas nem histórico.
+     Ao mexer no quadro: suba o número e escreva aqui o que mudou. */
+  var VERSAO_ROTINA = 2;
+  var NOTAS_ROTINA = {
+    2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.'
+  };
   var CHAVE_ANTIGA = 'minha-rotina:v1';
   var VERSAO = 2;
 
@@ -80,58 +88,60 @@
     var aula = [1, 3, 5];
     var estudo = [2, 4];
 
-    function bloco(titulo, hora, duracao, dias, area, fixo, nota) {
-      return { id: u.id(), titulo: titulo, hora: hora, duracao: duracao, dias: dias,
-               area: area, fixo: !!fixo, nota: nota || '' };
+    /* A chave identifica a atividade entre versões do quadro: é por ela que
+       uma atualização encontra o bloco certo e preserva o que já foi marcado. */
+    function bloco(chave, titulo, hora, duracao, dias, area, fixo, nota) {
+      return { id: u.id(), chave: chave, titulo: titulo, hora: hora, duracao: duracao,
+               dias: dias, area: area, fixo: !!fixo, nota: nota || '' };
     }
 
     return {
       blocos: [
-        bloco('Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Água e alongamento leve.'),
-        bloco('Oração da manhã · Leitura espiritual · Terço', '05:30', 30, todos, 'espiritual', false, ''),
-        bloco('Missa', '06:00', 30, fimDeSemana, 'espiritual', true, ''),
-        bloco('Café da manhã · Arrumar-se', '06:30', 30, todos, 'alimentacao', false, 'Preparar-se para o dia.'),
-        bloco('Revisão do dia', '07:00', 30, todos, 'pessoal', false, ''),
-        bloco('Saída · Deslocamento · Organização', '07:30', 30, todos, 'pessoal', false, ''),
+        bloco('acordar', 'Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Água e alongamento leve.'),
+        bloco('oracao-manha', 'Oração da manhã · Leitura espiritual · Terço', '05:30', 30, todos, 'espiritual', false, ''),
+        bloco('missa-fds', 'Missa', '06:00', 30, fimDeSemana, 'espiritual', true, ''),
+        bloco('cafe', 'Café da manhã · Arrumar-se', '06:30', 30, todos, 'alimentacao', false, 'Preparar-se para o dia.'),
+        bloco('revisao-dia', 'Revisão do dia', '07:00', 30, todos, 'pessoal', false, ''),
+        bloco('saida', 'Saída · Deslocamento · Organização', '07:30', 30, todos, 'pessoal', false, ''),
 
-        bloco('Aulas', '08:00', 240, aula, 'escola', true, ''),
-        bloco('Estudos / Tarefas', '08:00', 240, estudo, 'estudo', false, ''),
-        bloco('Administração da casa / Tarefas', '08:00', 240, [6], 'casa', false, ''),
-        bloco('Missa dominical e comunidade', '08:00', 240, [0], 'espiritual', true, ''),
+        bloco('aulas-manha', 'Aulas', '08:00', 240, aula, 'escola', true, ''),
+        bloco('estudos-manha', 'Estudos / Tarefas', '08:00', 240, estudo, 'estudo', false, ''),
+        bloco('casa-sabado', 'Administração da casa / Tarefas', '08:00', 240, [6], 'casa', false, ''),
+        bloco('missa-dominical', 'Missa dominical e comunidade', '08:00', 240, [0], 'espiritual', true, ''),
 
-        bloco('Almoço · Gratidão · Descanso breve', '12:00', 30, todos, 'alimentacao', false, ''),
-        bloco('Leitura leve', '12:30', 60, aula, 'hobby', false, ''),
-        bloco('Descanso', '12:30', 60, [2, 4, 6], 'descanso', false, ''),
-        bloco('Almoço em família · Descanso', '12:30', 60, [0], 'pessoal', false, ''),
+        bloco('almoco', 'Almoço · Gratidão · Descanso breve', '12:00', 30, todos, 'alimentacao', false, ''),
+        bloco('leitura-leve', 'Leitura leve', '12:30', 60, aula, 'hobby', false, ''),
+        bloco('descanso-tarde', 'Descanso', '12:30', 60, [2, 4, 6], 'descanso', false, ''),
+        bloco('almoco-familia', 'Almoço em família · Descanso', '12:30', 60, [0], 'pessoal', false, ''),
 
-        bloco('Aulas', '13:30', 240, aula, 'escola', true, ''),
-        bloco('Estudos / Tarefas', '13:30', 240, estudo, 'estudo', false, ''),
-        bloco('Estudos pessoais / Projetos', '13:30', 240, [6], 'estudo', false, ''),
-        bloco('Tempo com família · Lazer · Leitura', '13:30', 240, [0], 'pessoal', false, ''),
+        bloco('aulas-tarde', 'Aulas', '13:30', 240, aula, 'escola', true, ''),
+        bloco('estudos-tarde', 'Estudos / Tarefas', '13:30', 240, estudo, 'estudo', false, ''),
+        bloco('estudos-sabado', 'Estudos pessoais / Projetos', '13:30', 240, [6], 'estudo', false, ''),
+        bloco('familia-domingo', 'Tempo com família · Lazer · Leitura', '13:30', 240, [0], 'pessoal', false, ''),
 
         /* Nos dias de semana a Missa é às 18h; treino e adoração passam
            para as 17h30, logo depois das aulas. */
-        bloco('Treino (ou caminhada)', '17:30', 30, aula, 'exercicio', false, ''),
-        bloco('Oração / Terço · Adoração', '17:30', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
-        bloco('Missa', '18:00', 30, semana, 'espiritual', true, ''),
-        bloco('Atividade física leve ou lazer', '18:00', 30, [6], 'exercicio', false, ''),
-        bloco('Passeio · Natureza · Atividade física', '18:00', 30, [0], 'exercicio', false, ''),
+        bloco('treino', 'Treino (ou caminhada)', '17:30', 30, aula, 'exercicio', false, ''),
+        bloco('adoracao', 'Oração / Terço · Adoração', '17:30', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
+        bloco('missa-semana', 'Missa', '18:00', 30, semana, 'espiritual', true, ''),
+        bloco('atividade-sabado', 'Atividade física leve ou lazer', '18:00', 30, [6], 'exercicio', false, ''),
+        bloco('passeio-domingo', 'Passeio · Natureza · Atividade física', '18:00', 30, [0], 'exercicio', false, ''),
 
-        bloco('Banho · Jantar', '18:30', 30, todos, 'alimentacao', false, ''),
+        bloco('banho-jantar', 'Banho · Jantar', '18:30', 30, todos, 'alimentacao', false, ''),
 
-        bloco('Estudos', '19:00', 60, aula, 'estudo', false, ''),
-        bloco('Leitura espiritual / Formação', '19:00', 60, estudo, 'espiritual', false, ''),
-        bloco('Livre · Filme bom · Família', '19:00', 60, [6], 'hobby', false, ''),
-        bloco('Planejamento da semana · Leitura', '19:00', 60, [0], 'pessoal', false, ''),
+        bloco('estudos-noite', 'Estudos', '19:00', 60, aula, 'estudo', false, ''),
+        bloco('formacao-noite', 'Leitura espiritual / Formação', '19:00', 60, estudo, 'espiritual', false, ''),
+        bloco('livre-sabado', 'Livre · Filme bom · Família', '19:00', 60, [6], 'hobby', false, ''),
+        bloco('planejamento-domingo', 'Planejamento da semana · Leitura', '19:00', 60, [0], 'pessoal', false, ''),
 
-        bloco('Revisar conteúdo · Exercícios / Trabalhos', '20:00', 60, todos, 'estudo', false, ''),
-        bloco('Descanso · Dormir bem', '22:00', 0, todos, 'sono', true, 'Dormir bem para servir melhor amanhã.')
+        bloco('revisar-conteudo', 'Revisar conteúdo · Exercícios / Trabalhos', '20:00', 60, todos, 'estudo', false, ''),
+        bloco('dormir', 'Descanso · Dormir bem', '22:00', 0, todos, 'sono', true, 'Dormir bem para servir melhor amanhã.')
       ],
 
       eventos: [],
 
       rituais: [
-        { id: u.id(), titulo: 'Checklist diário', periodo: 'qualquer', hora: '', dias: todos, itens: [
+        { id: u.id(), chave: 'checklist-diario', titulo: 'Checklist diário', periodo: 'qualquer', hora: '', dias: todos, itens: [
           { id: u.id(), titulo: 'Missa' },
           { id: u.id(), titulo: 'Oração' },
           { id: u.id(), titulo: 'Estudos' },
@@ -139,7 +149,7 @@
           { id: u.id(), titulo: 'Leitura' },
           { id: u.id(), titulo: 'Gratidão' }
         ] },
-        { id: u.id(), titulo: 'Oração da noite', periodo: 'noite', hora: '21:00', dias: todos, itens: [
+        { id: u.id(), chave: 'oracao-noite', titulo: 'Oração da noite', periodo: 'noite', hora: '21:00', dias: todos, itens: [
           { id: u.id(), titulo: 'Exame de consciência' },
           { id: u.id(), titulo: 'Oração da noite' },
           { id: u.id(), titulo: 'Agradecimentos' }
@@ -197,6 +207,12 @@
     base.ajustes.secoes = Object.assign({ estudos: true, autocuidado: true, espiritual: true, objetivos: true },
       (d.ajustes && d.ajustes.secoes) || {});
     base.ajustes.lema = base.ajustes.lema || '';
+    /* Quem já tinha o quadro carregado antes deste controle existir está em dia:
+       o aviso só aparece para mudanças daqui em diante. */
+    base.ajustes.rotinaVersao = d.ajustes && d.ajustes.rotinaVersao !== undefined
+      ? Number(d.ajustes.rotinaVersao)
+      : (base.ajustes.semeado ? VERSAO_ROTINA : 0);
+    base.ajustes.rotinaAdiada = Number((d.ajustes || {}).rotinaAdiada) || 0;
     base.ajustes.prioridades = (base.ajustes.prioridades || []).map(String);
 
     base.alternativas = (d.alternativas || []).map(function (a) {
@@ -209,6 +225,7 @@
     base.blocos = (d.blocos || []).map(function (b) {
       return {
         id: b.id || u.id(),
+        chave: b.chave || null,
         titulo: String(b.titulo || 'Sem título'),
         hora: b.hora || '',
         duracao: Number(b.duracao) || 0,
@@ -292,6 +309,7 @@
     base.rituais = (d.rituais || []).map(function (r) {
       return {
         id: r.id || u.id(),
+        chave: r.chave || null,
         titulo: String(r.titulo || 'Ritual'),
         periodo: ['manha', 'tarde', 'noite', 'qualquer'].indexOf(r.periodo) !== -1 ? r.periodo : 'qualquer',
         hora: r.hora || '',
@@ -496,11 +514,82 @@
     estadoAlvo.ajustes.acordar = '05:00';
     estadoAlvo.ajustes.dormir = '22:00';
     estadoAlvo.ajustes.semeado = true;
+    estadoAlvo.ajustes.rotinaVersao = VERSAO_ROTINA;
+    estadoAlvo.ajustes.rotinaAdiada = 0;
   }
 
   function semear() {
     var ex = exemplo();
     commit(function (s) { aplicarSeed(s, ex); });
+  }
+
+  /* Há uma versão mais nova do quadro para aplicar? */
+  function rotinaDesatualizada() {
+    var a = estado.ajustes;
+    if (!a.semeado) return null;
+    var atual = Number(a.rotinaVersao) || 0;
+    if (atual >= VERSAO_ROTINA) return null;
+    if (Number(a.rotinaAdiada) >= VERSAO_ROTINA) return null;
+
+    var notas = [];
+    for (var v = atual + 1; v <= VERSAO_ROTINA; v++) {
+      if (NOTAS_ROTINA[v]) notas.push(NOTAS_ROTINA[v]);
+    }
+    return { versao: VERSAO_ROTINA, notas: notas };
+  }
+
+  function adiarAtualizacao() {
+    commit(function (s) { s.ajustes.rotinaAdiada = VERSAO_ROTINA; });
+  }
+
+  /* Aplica a versão nova do quadro casando cada item pela chave: os horários
+     mudam, mas os ids continuam os mesmos — então marcações, tarefas, estudos
+     e histórico ficam todos de pé. O que você criou por conta não é tocado. */
+  function atualizarRotina() {
+    var ex = exemplo();
+
+    commit(function (s) {
+      var blocoPorChave = {};
+      s.blocos.forEach(function (b) { if (b.chave) blocoPorChave[b.chave] = b; });
+
+      var chavesDoQuadro = {};
+      ex.blocos.forEach(function (novo) {
+        chavesDoQuadro[novo.chave] = true;
+        var atual = blocoPorChave[novo.chave];
+        if (!atual) { s.blocos.push(novo); return; }
+        atual.titulo = novo.titulo;
+        atual.hora = novo.hora;
+        atual.duracao = novo.duracao;
+        atual.dias = novo.dias;
+        atual.area = novo.area;
+        atual.fixo = novo.fixo;
+        atual.nota = novo.nota;
+      });
+      /* sai só o que veio do quadro e não existe mais nele */
+      s.blocos = s.blocos.filter(function (b) { return !b.chave || chavesDoQuadro[b.chave]; });
+
+      var ritualPorChave = {};
+      s.rituais.forEach(function (r) { if (r.chave) ritualPorChave[r.chave] = r; });
+
+      var chavesRituais = {};
+      ex.rituais.forEach(function (novo) {
+        chavesRituais[novo.chave] = true;
+        var atual = ritualPorChave[novo.chave];
+        if (!atual) { s.rituais.push(novo); return; }
+        atual.titulo = novo.titulo;
+        atual.periodo = novo.periodo;
+        atual.hora = novo.hora;
+        atual.dias = novo.dias;
+        /* os passos são casados pelo texto, para as marcações continuarem valendo */
+        var porTitulo = {};
+        atual.itens.forEach(function (i) { porTitulo[i.titulo] = i; });
+        atual.itens = novo.itens.map(function (i) { return porTitulo[i.titulo] || i; });
+      });
+      s.rituais = s.rituais.filter(function (r) { return !r.chave || chavesRituais[r.chave]; });
+
+      s.ajustes.rotinaVersao = VERSAO_ROTINA;
+      s.ajustes.rotinaAdiada = 0;
+    });
   }
 
   function limpar(manterEstrutura) {
@@ -551,6 +640,9 @@
     exportar: exportar,
     importar: importar,
     semear: semear,
+    rotinaDesatualizada: rotinaDesatualizada,
+    atualizarRotina: atualizarRotina,
+    adiarAtualizacao: adiarAtualizacao,
     limpar: limpar
   };
 })();

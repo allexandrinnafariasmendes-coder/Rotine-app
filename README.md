@@ -73,6 +73,19 @@ linguagem envolvido. O que o app faz sozinho:
 - **Distribui conteúdos de estudo** pelos dias disponíveis até a data da prova.
 - **Calcula a próxima vez** de cada cuidado recorrente e o tempo litúrgico do dia.
 
+## Quando a rotina do quadro muda
+
+O quadro tem versão (`VERSAO_ROTINA`, em `js/store.js`). Ao mexer nele, suba o
+número e escreva em `NOTAS_ROTINA` o que mudou: na próxima abertura o app avisa
+na tela Hoje e oferece **Aplicar** ou **Agora não**.
+
+Aplicar não apaga nada. Cada atividade do quadro tem uma `chave` estável
+(`missa-semana`, `treino`, …); a atualização encontra o bloco por ela e troca
+só horário, duração, dias e área, mantendo o mesmo `id` — por isso marcações,
+tarefas, sessões de estudo e histórico continuam de pé. Passos de ritual são
+casados pelo texto, pelo mesmo motivo. O que você criou por conta (sem `chave`)
+nunca é tocado, e lema, prioridades e alternativas ficam como estão.
+
 ## Backup
 
 Os dados vivem apenas neste aparelho: limpar os dados do navegador apaga tudo.

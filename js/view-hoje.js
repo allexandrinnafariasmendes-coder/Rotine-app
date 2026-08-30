@@ -276,6 +276,38 @@
     ]);
   }
 
+  /* Aviso de rotina atualizada: aplica sem apagar o que já foi feito. */
+  function atualizacaoDaRotina(store) {
+    var novidade = store.rotinaDesatualizada();
+    if (!novidade) return null;
+
+    return el('div.cartao', { style: 'margin-top:16px;border-left:3px solid var(--ouro)' }, [
+      el('div.versalete.fraco', { text: 'Rotina do quadro atualizada' }),
+      el('div.pilha.pilha--junta', { style: 'margin-top:8px' }, novidade.notas.map(function (n) {
+        return el('div', { style: 'font-family:var(--serif);font-size:15px', text: n });
+      })),
+      el('p.mini.sub', { style: 'margin-top:8px',
+        text: 'Aplicar muda só os horários do quadro. Suas marcações, tarefas, estudos e tudo que você criou continuam como estão.' }),
+      el('div.linha-btn', { style: 'margin-top:12px' }, [
+        el('button.btn.btn--p.btn--principal', {
+          type: 'button', text: 'Aplicar',
+          onclick: function () {
+            store.atualizarRotina();
+            ui.aviso('Rotina atualizada');
+            App.render();
+          }
+        }),
+        el('button.btn.btn--p.btn--fantasma', {
+          type: 'button', text: 'Agora não',
+          onclick: function () {
+            store.adiarAtualizacao();
+            App.render();
+          }
+        })
+      ])
+    ]);
+  }
+
   /* "Alternativas e saídas": o que fazer quando o dia não sai como o planejado.
      É a parte mais importante do quadro — a rotina precisa ter porta de saída. */
   function alternativas(store) {
@@ -305,7 +337,7 @@
 
       var avisos = motor.analisarDia(dia).slice(0, 2);
 
-      var filhos = [cabecalho(store, motor), agora(motor)];
+      var filhos = [cabecalho(store, motor), atualizacaoDaRotina(store), agora(motor)];
       if (avisos.length) {
         filhos.push(el('div.pilha', { style: 'margin-top:14px' }, avisos.map(ui.avisoCartao)));
       }
