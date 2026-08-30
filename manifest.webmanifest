@@ -1,0 +1,16 @@
+{
+  "name": "Minha Rotina",
+  "short_name": "Rotina",
+  "description": "Aplicativo pessoal para organizar o dia, criar hábitos e acompanhar o progresso.",
+  "lang": "pt-BR",
+  "start_url": "./index.html#/hoje",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f5fb",
+  "theme_color": "#6c5ce7",
+  "icons": [
+    { "src": "assets/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "assets/icon-maskable.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
+}
