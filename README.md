@@ -1,63 +1,85 @@
 # Minha Rotina
 
-Aplicativo pessoal para organizar o dia: rotina fixa, hábitos, tarefas e um
-resumo do progresso. Funciona no celular e no computador, **sem conta, sem
-internet e sem enviar nada para lugar nenhum** — tudo fica salvo no
-armazenamento do próprio navegador.
+Uma central de vida pessoal — não uma lista de tarefas. O aplicativo organiza o
+dia, a agenda, os estudos, os hábitos, o autocuidado, a espiritualidade, o
+descanso e os objetivos em um só lugar, **sem conta, sem internet e sem enviar
+nada para lugar nenhum**: tudo fica salvo no armazenamento do próprio aparelho.
+
+> Organizar a vida para vivê-la melhor — não viver para cumprir a organização.
 
 ## Como abrir
 
-**Jeito mais simples:** baixe a pasta e abra o arquivo `index.html` no
-navegador (duplo clique).
+**Mais simples:** baixe a pasta e abra `index.html` no navegador.
 
 **Como aplicativo no celular (recomendado):** publique a pasta em qualquer
-endereço `https` (o GitHub Pages serve, basta ativar nas configurações do
-repositório), abra o link no celular e escolha *Adicionar à tela de início*.
+endereço `https` — o GitHub Pages serve, basta ativar nas configurações do
+repositório —, abra o link no celular e escolha *Adicionar à tela de início*.
 Ele passa a abrir em tela cheia e funciona offline.
 
-**Para testar localmente com servidor:**
+**Localmente com servidor:**
 
 ```bash
-python3 -m http.server 8000
-# depois abra http://localhost:8000
+python3 -m http.server 8000    # depois abra http://localhost:8000
 ```
 
-## O que dá para fazer
+## As áreas
 
-| Aba | Para quê |
+| Tela | O que faz |
 | --- | --- |
-| **Hoje** | O dia em andamento, separado em manhã, tarde e noite, com anel de conclusão. Dá para voltar um dia e marcar o que ficou para trás. |
-| **Rotina** | Cadastro das atividades que se repetem: horário, duração, dias da semana, categoria e uma observação. |
-| **Hábitos** | Marcação diária com sequência ("🔥 5 dias seguidos") e meta semanal. A grade mostra os últimos 7 dias e qualquer um deles pode ser marcado. |
-| **Tarefas** | Pendências avulsas, com data opcional, prioridade e aviso de atrasadas. |
-| **Progresso** | Média dos últimos 7 dias, dias completos, maior sequência, gráfico diário, desempenho por categoria e hábitos do mês. |
-| **Ajustes** | Nome na saudação, tema (automático/claro/escuro), backup em arquivo e opções de recomeço. |
+| 🏠 **Hoje** | O dia em manhã, tarde e noite, com o que está acontecendo agora, os rituais do momento, as tarefas, o autocuidado devido e o fechamento do dia. |
+| 🗓️ **Agenda** | Calendário e rotina juntos: compromissos de um dia e atividades recorrentes na mesma linha do tempo, com horários fixos marcados como tal. |
+| ✅ **Tarefas** | Prioridade em três níveis, tempo estimado, prazo e vínculo com objetivos. |
+| 📚 **Estudos** | Disciplina → assunto → conteúdo, sessões cronometradas e distribuição automática de conteúdos pelos dias até o prazo. |
+| 🎯 **Minha vida** | Objetivos por área (estudos, futuro, eu, casa, vida pessoal), quebrados em passos que viram tarefas agendadas. |
+| 🌿 **Hábitos** | Rituais contextualizados (rotina da manhã, rotina noturna) em vez de caixinhas soltas, com itens "só para hoje" e a pergunta "quer manter amanhã?". |
+| ✨ **Autocuidado** | Pele, cabelo, unhas, corpo e organização, com a próxima data calculada sozinha a partir do ritmo de cada cuidado. |
+| 🕊️ **Vida espiritual** | Práticas, intenções e diário, com o tempo litúrgico calculado offline. Sem sequência, sem pontuação: um dia sem marcar não apaga nada. |
+| 📊 **Minha semana** | Estudos, sono, exercícios, autocuidado, descanso e tarefas — lidos com gentileza, seguidos de uma reflexão sua. |
+| 🤖 **Assistente** | Organiza o dia a partir de uma frase escrita do seu jeito, sugere o que fazer no tempo que você tem e ajuda a tirar peso da lista. |
 
-Na primeira abertura vem uma rotina de exemplo — é só editar ou apagar tudo em
-**Ajustes → Recomeçar**.
+## A inteligência da rotina
+
+Tudo roda no seu aparelho, com regras — não há serviço externo nem modelo de
+linguagem envolvido. O que o app faz sozinho:
+
+- **Entende uma frase e monta o dia.** "Amanhã tenho aula até meio-dia, quero
+  estudar duas horas, preciso arrumar meu quarto e quero descansar" vira uma
+  distribuição com horários, respeitando o que já existe na sua rotina, quebrando
+  estudos longos em blocos com pausa e remarcando o que for flexível.
+- **Avisa quando o dia está cheio demais** e ajuda a decidir o que fica, o que
+  pode ser adiado (→) e o que pode sair (×), mostrando prioridade e tempo estimado.
+- **Cobra descanso.** Se o dia não tem nenhuma pausa, o app diz isso e reserva
+  30 minutos no primeiro espaço livre. Descanso é categoria de primeira classe,
+  ao lado de estudo e compromisso.
+- **Responde "tenho 30 minutos".** Escolhe entre tarefas, conteúdos de estudo,
+  cuidados atrasados e passos de objetivos — e explica por que sugeriu aquilo.
+- **Distribui conteúdos de estudo** pelos dias disponíveis até a data da prova.
+- **Calcula a próxima vez** de cada cuidado recorrente e o tempo litúrgico do dia.
 
 ## Backup
 
 Os dados vivem apenas neste aparelho: limpar os dados do navegador apaga tudo.
-Em **Ajustes → Backup** dá para baixar um arquivo `.json` com toda a rotina e o
-histórico, e restaurá-lo depois — inclusive em outro celular ou computador.
+Em **Ajustes → Backup** dá para baixar um `.json` com toda a rotina e o histórico
+e restaurá-lo depois, inclusive em outro aparelho. Dados da primeira versão do
+app são migrados automaticamente na primeira abertura.
 
 ## Como o projeto é feito
 
-HTML, CSS e JavaScript puro, sem dependências e sem etapa de build.
+HTML, CSS e JavaScript puro — sem dependências, sem build.
 
 ```
-index.html              estrutura da página e barra de navegação
-assets/styles.css       estilos e temas claro/escuro
-js/util.js              datas, formatação e criação de elementos
-js/store.js             estado, persistência e cálculos (sequência, progresso)
-js/ui.js                painel de formulário, avisos, anel e itens de lista
+index.html              estrutura, barra de navegação e painel
+assets/styles.css       identidade visual (creme, rosa suave, sálvia, azul claro)
+js/util.js              datas, horários, formatação e criação de elementos
+js/store.js             modelo de dados, persistência e migração
+js/motor.js             inteligência: monta o dia, analisa, sugere, interpreta frases
+js/ui.js                formulários em painel, avisos, listas e componentes
 js/view-*.js            uma tela por arquivo
-js/app.js               rota por hash, renderização e tema
+js/app.js               rotas por hash, renderização e tema
 sw.js                   cache para funcionar offline
 manifest.webmanifest    instalação como aplicativo
 ```
 
-Cada tela é uma função `render(store)` que devolve um elemento; qualquer
-alteração passa por `store.commit(...)`, que salva no `localStorage` e manda a
-tela ser desenhada de novo.
+Cada tela é uma função `render(store)` que devolve um elemento; toda alteração
+passa por `store.commit(...)`, que salva no `localStorage` e redesenha a tela.
+O motor (`js/motor.js`) não toca no DOM — é só regra, o que o mantém testável.

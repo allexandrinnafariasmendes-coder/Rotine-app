@@ -1,144 +1,182 @@
-/* Tela "Hoje": o dia em andamento — rotina, hábitos e tarefas. */
+/* Tela "Hoje": a rotina do momento, com o essencial à vista. */
 (function () {
   'use strict';
 
   var App = window.App;
   var u = App.util, el = u.el, ui = App.ui;
 
-  var dia = null;   /* dia visível; permite revisar ontem sem perder o registro */
+  var dia = null;
 
   var PERIODOS = [
-    { chave: 'manha', rotulo: 'Manhã' },
-    { chave: 'tarde', rotulo: 'Tarde' },
-    { chave: 'noite', rotulo: 'Noite' },
-    { chave: 'flex', rotulo: 'Sem horário' }
+    { chave: 'manha', emoji: '☀️', nome: 'Manhã' },
+    { chave: 'tarde', emoji: '🌤️', nome: 'Tarde' },
+    { chave: 'noite', emoji: '🌙', nome: 'Noite' },
+    { chave: 'flex', emoji: '🕊️', nome: 'Sem horário' }
   ];
 
-  function saudacao() {
-    var h = new Date().getHours();
-    if (h < 5) return 'Boa madrugada';
-    if (h < 12) return 'Bom dia';
-    if (h < 18) return 'Boa tarde';
-    return 'Boa noite';
-  }
+  function estrelas(n) { return new Array(n + 1).join('★'); }
 
-  function frase(prog) {
-    if (!prog.total) return 'Nada programado ainda. Monte sua rotina na aba Rotina.';
-    if (prog.pct === 100) return 'Dia completo. Aproveite o descanso. 🎉';
-    if (prog.pct >= 60) return 'Bom ritmo — faltam ' + (prog.total - prog.concluidos) + ' itens.';
-    if (prog.concluidos === 0) return 'Comece pelo primeiro item da lista.';
-    return 'Você já concluiu ' + prog.concluidos + ' de ' + prog.total + '.';
-  }
+  /* ------------------------------------------------- cabeçalho */
 
-  function cabecalho(store) {
-    var prog = store.progressoDoDia(dia);
+  function cabecalho(store, motor) {
+    var itens = motor.itensDoDia(dia);
+    var tarefas = motor.tarefasDoDia(dia);
+    var feitos = itens.filter(function (i) { return i.feito; }).length;
+    var total = itens.length;
     var ehHoje = dia === u.hoje();
+
     var nome = store.estado.ajustes.nome;
+    var hora = new Date().getHours();
+    var saudacao = hora < 5 ? 'Boa madrugada' : (hora < 12 ? 'Bom dia' : (hora < 18 ? 'Boa tarde' : 'Boa noite'));
 
-    var hero = el('div.hero', {}, [
-      el('div.hero__text', {}, [
-        el('div.hero__hi', { text: ehHoje ? saudacao() + (nome ? ', ' + nome : '') + '!' : u.dataRelativa(dia) }),
-        el('div.hero__date', { text: u.dataLonga(dia) }),
-        el('div.hero__note', { text: frase(prog) })
+    return el('div.hoje-topo', {}, [
+      nome && ehHoje ? el('div.mini.fraco', { text: saudacao + ', ' + nome }) : null,
+      el('div.hoje-topo__data', { text: u.dataLonga(dia) }),
+      el('div.hoje-topo__frase', { text: '“' + motor.fraseDoDia(dia) + '”' }),
+      el('div.hoje-topo__linha', {}, [
+        ui.barraProgresso(u.pct(feitos, total)),
+        el('span.mini.fraco', { text: total ? feitos + '/' + total : '—' })
       ]),
-      ui.anel(prog.pct)
-    ]);
-
-    var navegacao = el('div.row', { style: 'margin:12px 2px 0;align-items:center' }, [
-      el('button.btn.btn--sm.btn--ghost', {
-        type: 'button', text: '‹ ' + u.dataCurta(u.somarDias(dia, -1)),
-        onclick: function () { dia = u.somarDias(dia, -1); App.render(); }
-      }),
-      !ehHoje ? el('button.btn.btn--sm', {
-        type: 'button', text: 'Voltar para hoje',
-        onclick: function () { dia = u.hoje(); App.render(); }
-      }) : null,
-      el('button.btn.btn--sm.btn--ghost', {
-        type: 'button', text: u.dataCurta(u.somarDias(dia, 1)) + ' ›',
-        onclick: function () { dia = u.somarDias(dia, 1); App.render(); }
-      })
-    ]);
-
-    return el('div', {}, [hero, navegacao]);
+      el('div.linha-btn', { style: 'margin-top:12px' }, [
+        el('button.btn.btn--p.btn--fantasma', {
+          type: 'button', text: '‹ ' + u.dataCurta(u.somarDias(dia, -1)),
+          onclick: function () { dia = u.somarDias(dia, -1); App.render(); }
+        }),
+        !ehHoje ? el('button.btn.btn--p.btn--suave', {
+          type: 'button', text: 'Hoje',
+          onclick: function () { dia = u.hoje(); App.render(); }
+        }) : null,
+        el('button.btn.btn--p.btn--fantasma', {
+          type: 'button', text: u.dataCurta(u.somarDias(dia, 1)) + ' ›',
+          onclick: function () { dia = u.somarDias(dia, 1); App.render(); }
+        }),
+        tarefas.length ? el('span.mini.fraco', { style: 'margin-left:auto;align-self:center',
+          text: u.plural(tarefas.length, 'tarefa aberta', 'tarefas abertas') }) : null
+      ])
+    ].filter(Boolean));
   }
 
-  function linhaBloco(store, bloco) {
-    var cat = store.CATEGORIAS[bloco.categoria];
-    var marcado = store.feito('blocos', bloco.id, dia);
+  /* ------------------------------------------------- agora ---- */
 
-    var meta = [el('span', {}, [
-      el('span.dot', { style: 'background:' + cat.cor + ';display:inline-block;margin-right:6px' }),
-      cat.nome
-    ])];
-    if (bloco.duracao) meta.push(el('span', { text: u.duracaoTexto(bloco.duracao) }));
-    if (bloco.nota) meta.push(el('span', { text: bloco.nota }));
+  function agora(motor) {
+    if (dia !== u.hoje()) return null;
+    var r = motor.agoraEDepois(dia);
+    if (!r.agora && !r.proximo) return null;
 
-    return ui.itemMarcavel({
-      titulo: bloco.titulo,
-      hora: bloco.hora || '—',
-      feito: marcado,
+    return el('div.cartao.cartao--destaque', {}, [
+      r.agora
+        ? el('div', {}, [
+            el('div.mini.fraco', { text: 'AGORA' }),
+            el('div.item__titulo', { style: 'font-size:17px;margin-top:2px', text: r.agora.titulo }),
+            el('div.mini.sub', { text: u.faixa(r.agora.hora, r.agora.duracao) })
+          ])
+        : el('div', {}, [
+            el('div.mini.fraco', { text: 'AGORA' }),
+            el('div.item__titulo', { style: 'font-size:17px;margin-top:2px', text: 'Tempo livre' }),
+            el('div.mini.sub', { text: 'Nada marcado neste momento.' })
+          ]),
+      r.proximo ? el('div.mini.sub', { style: 'margin-top:10px;padding-top:10px;border-top:1px solid var(--linha)',
+        text: 'A seguir · ' + r.proximo.hora + ' — ' + r.proximo.titulo }) : null
+    ]);
+  }
+
+  /* ------------------------------------------------- rituais -- */
+
+  function cartaoRitual(store, item) {
+    var r = item.ref;
+    var feitos = r.itens.filter(function (i) { return store.feito('itens', i.id, dia); }).length;
+
+    return el('div.cartao', {}, [
+      el('div', { style: 'display:flex;align-items:center;gap:10px' }, [
+        el('div', { style: 'flex:1' }, [
+          el('div.item__titulo', { text: r.titulo }),
+          el('div.item__meta', {}, [
+            r.hora ? el('span', { text: r.hora }) : null,
+            el('span', { text: feitos + ' de ' + r.itens.length })
+          ].filter(Boolean))
+        ]),
+        feitos === r.itens.length && r.itens.length
+          ? ui.etiqueta('completo', 'salvia') : null
+      ]),
+      el('div.lista-check', {}, r.itens.map(function (i) {
+        return ui.linhaCheck(i.titulo, store.feito('itens', i.id, dia), function () {
+          store.alternar('itens', i.id, dia);
+          App.render();
+        });
+      }))
+    ]);
+  }
+
+  /* ------------------------------------------------- períodos - */
+
+  function linhaItem(store, item) {
+    var area = store.AREAS[item.area];
+    var meta = [ui.ponto(area.cor), el('span', { text: area.nome })];
+    if (item.duracao) meta.push(el('span', { text: u.duracaoTexto(item.duracao) }));
+    if (item.tipo === 'evento') meta.push(ui.etiqueta('compromisso', 'azul'));
+    if (item.fixo && item.tipo !== 'evento') meta.push(ui.etiqueta('fixo'));
+
+    return ui.itemLinha({
+      hora: item.hora,
+      titulo: item.titulo,
+      feito: item.feito,
+      nota: item.tipo === 'bloco' ? item.nota : (item.ref.local || item.ref.nota || ''),
       meta: meta,
-      aoMarcar: function () { store.alternar('blocos', bloco.id, dia); App.render(); }
+      aoMarcar: function () {
+        store.alternar(item.tipo === 'evento' ? 'eventos' : 'blocos', item.id, dia);
+        App.render();
+      }
     });
   }
 
-  function secaoRotina(store) {
-    var blocos = store.blocosDoDia(dia);
-    var out = [el('div.section-head', {}, [
-      el('h2', { text: 'Rotina do dia' }),
-      el('span', { text: u.plural(blocos.length, 'atividade', 'atividades') })
-    ])];
-
-    if (!blocos.length) {
-      out.push(ui.vazio('Nenhuma atividade neste dia', 'Adicione atividades na aba Rotina.'));
-      return out;
-    }
+  function periodos(store, motor) {
+    var grupos = motor.porPeriodo(dia);
+    var out = [];
 
     PERIODOS.forEach(function (p) {
-      var doPeriodo = blocos.filter(function (b) { return u.periodoDe(b.hora) === p.chave; });
-      if (!doPeriodo.length) return;
-      out.push(el('div.tiny.muted', { style: 'margin:14px 2px 6px;font-weight:700', text: p.rotulo }));
-      out.push(el('div.stack.stack--tight', {}, doPeriodo.map(function (b) { return linhaBloco(store, b); })));
+      var lista = grupos[p.chave];
+      if (!lista.length) return;
+      var feitos = lista.filter(function (i) { return i.feito; }).length;
+
+      out.push(el('div.periodo', {}, [
+        el('div.periodo__titulo', {}, [
+          el('span', { text: p.emoji }),
+          el('span', { text: p.nome }),
+          el('em', { text: feitos + '/' + lista.length })
+        ]),
+        el('div', {}, lista.map(function (i) {
+          return i.tipo === 'ritual' ? cartaoRitual(store, i) : linhaItem(store, i);
+        }))
+      ]));
     });
+
+    if (!out.length) {
+      out.push(el('div', { style: 'margin-top:18px' }, [
+        ui.vazio('Nenhuma atividade neste dia',
+          'Monte sua rotina na Agenda ou peça ajuda ao assistente.')
+      ]));
+    }
 
     return out;
   }
 
-  function secaoHabitos(store) {
-    var habitos = store.estado.habitos;
-    if (!habitos.length) return [];
+  /* ------------------------------------------------- extras --- */
 
-    var feitos = habitos.filter(function (h) { return store.feito('habitos', h.id, dia); }).length;
-
-    return [
-      el('div.section-head', {}, [
-        el('h2', { text: 'Hábitos' }),
-        el('span', { text: feitos + '/' + habitos.length })
-      ]),
-      el('div.stack.stack--tight', {}, habitos.map(function (h) {
-        var seq = store.sequencia(h.id);
-        return ui.itemMarcavel({
-          titulo: h.emoji + '  ' + h.titulo,
-          feito: store.feito('habitos', h.id, dia),
-          meta: seq > 1 ? [el('span.chip.chip--brand', { text: '🔥 ' + seq + ' dias seguidos' })] : null,
-          aoMarcar: function () { store.alternar('habitos', h.id, dia); App.render(); }
-        });
-      }))
-    ];
-  }
-
-  function secaoTarefas(store) {
-    var tarefas = store.tarefasDe(dia);
-    var atrasadas = dia === u.hoje() ? store.tarefasAtrasadas() : [];
+  function tarefasDoDia(store, motor) {
+    var tarefas = motor.tarefasDoDia(dia).sort(function (a, b) { return b.prioridade - a.prioridade; });
+    var atrasadas = dia === u.hoje()
+      ? store.estado.tarefas.filter(function (t) { return !t.feita && t.data && t.data < dia; })
+      : [];
     if (!tarefas.length && !atrasadas.length) return [];
 
     function linha(t, atrasada) {
-      return ui.itemMarcavel({
+      return ui.itemLinha({
         titulo: t.titulo,
         feito: t.feita,
         meta: [
-          atrasada ? el('span.chip.chip--warn', { text: 'atrasada · ' + u.dataCurta(t.data) }) : null,
-          t.prioridade ? el('span.chip', { text: '★ prioridade' }) : null
+          t.prioridade === 3 ? ui.etiqueta(estrelas(3), 'rosa') : (t.prioridade === 1 ? ui.etiqueta('pode esperar') : null),
+          el('span', { text: u.duracaoTexto(t.estimativa) }),
+          atrasada ? ui.etiqueta('de ' + u.dataCurta(t.data), 'dourada') : null
         ].filter(Boolean),
         aoMarcar: function () {
           store.commit(function () { t.feita = !t.feita; });
@@ -148,26 +186,117 @@
     }
 
     return [
-      el('div.section-head', {}, [
-        el('h2', { text: 'Tarefas' }),
-        el('span', { text: u.plural(tarefas.length + atrasadas.length, 'item', 'itens') })
-      ]),
-      el('div.stack.stack--tight', {},
-        atrasadas.map(function (t) { return linha(t, true); })
-          .concat(tarefas.map(function (t) { return linha(t, false); })))
+      ui.tituloSecao('✅ Tarefas', u.plural(tarefas.length + atrasadas.length, 'item', 'itens')),
+      el('div', {}, atrasadas.map(function (t) { return linha(t, true); })
+        .concat(tarefas.map(function (t) { return linha(t, false); })))
     ];
+  }
+
+  function cuidadosDoDia(store) {
+    if (!store.estado.ajustes.secoes.autocuidado) return [];
+    var pendentes = store.cuidadosDeHoje(dia).filter(function (c) { return !store.feito('cuidados', c.id, dia); });
+    var feitosHoje = store.estado.cuidados.filter(function (c) { return store.feito('cuidados', c.id, dia); });
+    if (!pendentes.length && !feitosHoje.length) return [];
+
+    return [
+      ui.tituloSecao('✨ Autocuidado de hoje'),
+      el('div.cartao', {}, [
+        el('div.lista-check', {}, pendentes.concat(feitosHoje).map(function (c) {
+          var feito = store.feito('cuidados', c.id, dia);
+          return ui.linhaCheck(c.titulo, feito, function () {
+            store.commit(function () {
+              var reg = store.dia(dia);
+              if (reg.cuidados[c.id]) { delete reg.cuidados[c.id]; c.ultimaVez = null; }
+              else { reg.cuidados[c.id] = true; c.ultimaVez = dia; }
+            });
+            App.render();
+          });
+        }))
+      ])
+    ];
+  }
+
+  function espiritualDoDia(store, motor) {
+    if (!store.estado.ajustes.secoes.espiritual) return [];
+    var praticas = store.estado.espiritual.praticas;
+    if (!praticas.length) return [];
+    var lit = motor.tempoLiturgico(dia);
+
+    return [
+      ui.tituloSecao('🕊️ Vida espiritual', el('span.mini.fraco', { text: lit.tempo })),
+      el('div.cartao', {}, [
+        el('div.lista-check', {}, praticas.map(function (p) {
+          return ui.linhaCheck(p.titulo, store.feito('praticas', p.id, dia), function () {
+            store.alternar('praticas', p.id, dia);
+            App.render();
+          });
+        })),
+        el('div.mini.fraco', { style: 'margin-top:8px;font-style:italic', text: lit.nota })
+      ])
+    ];
+  }
+
+  /* ---------------------------------------------- revisão ----- */
+
+  function revisaoDoDia(store) {
+    var rev = store.revisao(dia);
+
+    function abrir() {
+      ui.abrirFormulario({
+        titulo: 'Revisão do dia',
+        valores: rev || { humor: 'bem', sono: 8, nota: '' },
+        campos: [
+          { nome: 'humor', rotulo: 'Como foi o seu dia?', tipo: 'opcoes', opcoes: [
+            { valor: 'leve', rotulo: '🌿 Leve' },
+            { valor: 'bem', rotulo: '🙂 Bem' },
+            { valor: 'corrido', rotulo: '😮‍💨 Corrido' },
+            { valor: 'dificil', rotulo: '🌧️ Difícil' }
+          ] },
+          { nome: 'sono', rotulo: 'Horas de sono na noite passada', tipo: 'numero', min: 0, max: 14, passo: 0.5 },
+          { nome: 'nota', rotulo: 'Algo que você queira guardar', tipo: 'texto-longo',
+            dica: 'O que funcionou hoje? O que pode ficar mais leve amanhã?' }
+        ],
+        aoSalvar: function (v) {
+          store.salvarRevisao(dia, v);
+          ui.aviso('Revisão guardada');
+          App.render();
+        }
+      });
+    }
+
+    return el('div.cartao', { style: 'margin-top:24px' }, [
+      el('div.item__titulo', { text: rev ? 'Revisão do dia guardada' : 'Fechar o dia' }),
+      el('p.mini.sub', { style: 'margin-top:4px',
+        text: rev
+          ? (rev.nota || 'Você registrou como foi este dia.')
+          : 'Um minuto para olhar o dia com carinho antes de dormir.' }),
+      el('button.btn.btn--p.btn--suave', { style: 'margin-top:10px',
+        type: 'button', text: rev ? 'Editar revisão' : 'Revisar o dia', onclick: abrir })
+    ]);
   }
 
   App.views = App.views || {};
   App.views.hoje = {
     titulo: 'Hoje',
+    aoEntrar: function (params) { if (params && params.dia) dia = params.dia; },
     render: function (store) {
+      var motor = App.motor;
       if (!dia) dia = u.hoje();
-      var filhos = [cabecalho(store)]
-        .concat(secaoRotina(store))
-        .concat(secaoHabitos(store))
-        .concat(secaoTarefas(store));
-      return el('div', {}, filhos);
+
+      var avisos = motor.analisarDia(dia).slice(0, 2);
+
+      var filhos = [cabecalho(store, motor), agora(motor)];
+      if (avisos.length) {
+        filhos.push(el('div.pilha', { style: 'margin-top:14px' }, avisos.map(ui.avisoCartao)));
+      }
+      filhos = filhos
+        .concat(periodos(store, motor))
+        .concat(tarefasDoDia(store, motor))
+        .concat(cuidadosDoDia(store))
+        .concat(espiritualDoDia(store, motor));
+      filhos.push(revisaoDoDia(store));
+
+      return el('div', {}, filhos.filter(Boolean));
     }
   };
 })();

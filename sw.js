@@ -1,5 +1,5 @@
 /* Cache simples para o app abrir sem internet. */
-var CACHE = 'minha-rotina-v1';
+var CACHE = 'minha-rotina-v2';
 var ARQUIVOS = [
   './',
   './index.html',
@@ -9,12 +9,19 @@ var ARQUIVOS = [
   './assets/icon-maskable.svg',
   './js/util.js',
   './js/store.js',
+  './js/motor.js',
   './js/ui.js',
   './js/view-hoje.js',
-  './js/view-rotina.js',
-  './js/view-habitos.js',
+  './js/view-agenda.js',
   './js/view-tarefas.js',
-  './js/view-progresso.js',
+  './js/view-estudos.js',
+  './js/view-objetivos.js',
+  './js/view-habitos.js',
+  './js/view-autocuidado.js',
+  './js/view-espiritual.js',
+  './js/view-semana.js',
+  './js/view-assistente.js',
+  './js/view-mais.js',
   './js/view-ajustes.js',
   './js/app.js'
 ];

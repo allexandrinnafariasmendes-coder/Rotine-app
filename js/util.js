@@ -1,4 +1,4 @@
-/* Funções auxiliares: datas, formatação e criação de elementos. */
+/* Funções auxiliares: datas, horários, formatação e criação de elementos. */
 (function () {
   'use strict';
 
@@ -11,11 +11,10 @@
                'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
 
   function pad(n) { return n < 10 ? '0' + n : String(n); }
+  function maiuscula(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
 
-  /* Datas são sempre tratadas no fuso local, no formato AAAA-MM-DD. */
-  function toISO(date) {
-    return date.getFullYear() + '-' + pad(date.getMonth() + 1) + '-' + pad(date.getDate());
-  }
+  /* Datas sempre no fuso local, no formato AAAA-MM-DD. */
+  function toISO(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
 
   function fromISO(iso) {
     var p = String(iso).split('-');
@@ -23,6 +22,7 @@
   }
 
   function hoje() { return toISO(new Date()); }
+  function agoraMin() { var d = new Date(); return d.getHours() * 60 + d.getMinutes(); }
 
   function somarDias(iso, n) {
     var d = fromISO(iso);
@@ -30,12 +30,15 @@
     return toISO(d);
   }
 
+  function diasEntre(a, b) {
+    return Math.round((fromISO(b) - fromISO(a)) / 86400000);
+  }
+
   function diaDaSemana(iso) { return fromISO(iso).getDay(); }
 
   function dataLonga(iso) {
     var d = fromISO(iso);
-    var dia = DIAS_LONGOS[d.getDay()];
-    return dia.charAt(0).toUpperCase() + dia.slice(1) + ', ' + d.getDate() + ' de ' + MESES[d.getMonth()];
+    return maiuscula(DIAS_LONGOS[d.getDay()]) + ', ' + d.getDate() + ' de ' + MESES[d.getMonth()];
   }
 
   function dataCurta(iso) {
@@ -43,26 +46,55 @@
     return pad(d.getDate()) + '/' + pad(d.getMonth() + 1);
   }
 
-  /* Rótulo relativo — "hoje", "amanhã", "ontem" ou a data curta. */
   function dataRelativa(iso) {
-    if (iso === hoje()) return 'hoje';
-    if (iso === somarDias(hoje(), 1)) return 'amanhã';
-    if (iso === somarDias(hoje(), -1)) return 'ontem';
+    if (!iso) return 'algum dia';
+    var h = hoje();
+    if (iso === h) return 'hoje';
+    if (iso === somarDias(h, 1)) return 'amanhã';
+    if (iso === somarDias(h, -1)) return 'ontem';
+    var d = diasEntre(h, iso);
+    if (d > 1 && d < 7) return DIAS_CURTOS[diaDaSemana(iso)].toLowerCase() + ' (' + dataCurta(iso) + ')';
     return dataCurta(iso);
   }
 
-  /* Lista dos últimos n dias terminando em `ate` (inclusive). */
   function ultimosDias(n, ate) {
-    var fim = ate || hoje();
-    var out = [];
+    var fim = ate || hoje(), out = [];
     for (var i = n - 1; i >= 0; i--) out.push(somarDias(fim, -i));
     return out;
   }
 
+  /* Semana de segunda a domingo contendo a data. */
+  function inicioDaSemana(iso) {
+    var dow = diaDaSemana(iso);
+    return somarDias(iso, dow === 0 ? -6 : 1 - dow);
+  }
+
+  function diasDaSemana(iso) {
+    var ini = inicioDaSemana(iso), out = [];
+    for (var i = 0; i < 7; i++) out.push(somarDias(ini, i));
+    return out;
+  }
+
+  /* -------------------------------------------------- horários */
+
   function minutosDe(hhmm) {
     if (!hhmm) return null;
-    var p = hhmm.split(':');
-    return Number(p[0]) * 60 + Number(p[1]);
+    var p = String(hhmm).split(':');
+    var h = Number(p[0]), m = Number(p[1] || 0);
+    if (isNaN(h)) return null;
+    return h * 60 + m;
+  }
+
+  function hhmm(min) {
+    var m = ((Math.round(min) % 1440) + 1440) % 1440;
+    return pad(Math.floor(m / 60)) + ':' + pad(m % 60);
+  }
+
+  function faixa(hora, duracao) {
+    var ini = minutosDe(hora);
+    if (ini === null) return '';
+    if (!duracao) return hora;
+    return hora + '–' + hhmm(ini + duracao);
   }
 
   function duracaoTexto(min) {
@@ -72,28 +104,34 @@
     return m ? h + 'h' + pad(m) : h + 'h';
   }
 
-  function periodoDe(hhmm) {
-    var m = minutosDe(hhmm);
+  function horasTexto(min) {
+    if (!min) return '0h';
+    var h = Math.floor(min / 60), m = Math.round(min % 60);
+    return m ? h + 'h' + pad(m) : h + 'h';
+  }
+
+  function periodoDe(hora) {
+    var m = minutosDe(hora);
     if (m === null) return 'flex';
     if (m < 12 * 60) return 'manha';
     if (m < 18 * 60) return 'tarde';
     return 'noite';
   }
 
-  function id() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-  }
+  function id() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 
-  function pct(feito, total) {
-    if (!total) return 0;
-    return Math.round((feito / total) * 100);
-  }
+  function pct(feito, total) { return total ? Math.round((feito / total) * 100) : 0; }
 
   function plural(n, um, muitos) { return n + ' ' + (n === 1 ? um : muitos); }
 
-  /* Criação de elementos: el('div.card', {onclick: fn}, [filhos|texto]) */
+  /* Texto sem acento e em minúsculas, para comparações do assistente. */
+  function simples(t) {
+    return String(t || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  /* Criação de elementos: el('div.card', {onclick: fn}, [filhos]) */
   function el(spec, attrs, filhos) {
-    var partes = spec.split('.');
+    var partes = String(spec).split('.');
     var node = document.createElement(partes.shift() || 'div');
     if (partes.length) node.className = partes.join(' ');
 
@@ -102,43 +140,26 @@
       if (v === null || v === undefined || v === false) return;
       if (k.indexOf('on') === 0 && typeof v === 'function') node.addEventListener(k.slice(2), v);
       else if (k === 'text') node.textContent = v;
-      else if (k === 'html') node.innerHTML = v;
       else if (k === 'dataset') Object.keys(v).forEach(function (d) { node.dataset[d] = v[d]; });
       else node.setAttribute(k, v === true ? '' : v);
     });
 
-    []
-      .concat(filhos === undefined ? [] : filhos)
-      .forEach(function (f) {
-        if (f === null || f === undefined || f === false) return;
-        node.appendChild(typeof f === 'string' || typeof f === 'number'
-          ? document.createTextNode(String(f))
-          : f);
-      });
+    [].concat(filhos === undefined ? [] : filhos).forEach(function (f) {
+      if (f === null || f === undefined || f === false) return;
+      node.appendChild(typeof f === 'string' || typeof f === 'number'
+        ? document.createTextNode(String(f)) : f);
+    });
 
     return node;
   }
 
   App.util = {
-    DIAS_CURTOS: DIAS_CURTOS,
-    DIAS_MINI: DIAS_MINI,
-    DIAS_LONGOS: DIAS_LONGOS,
-    pad: pad,
-    toISO: toISO,
-    fromISO: fromISO,
-    hoje: hoje,
-    somarDias: somarDias,
-    diaDaSemana: diaDaSemana,
-    dataLonga: dataLonga,
-    dataCurta: dataCurta,
-    dataRelativa: dataRelativa,
-    ultimosDias: ultimosDias,
-    minutosDe: minutosDe,
-    duracaoTexto: duracaoTexto,
-    periodoDe: periodoDe,
-    id: id,
-    pct: pct,
-    plural: plural,
-    el: el
+    DIAS_CURTOS: DIAS_CURTOS, DIAS_MINI: DIAS_MINI, DIAS_LONGOS: DIAS_LONGOS, MESES: MESES,
+    pad: pad, maiuscula: maiuscula, toISO: toISO, fromISO: fromISO, hoje: hoje, agoraMin: agoraMin,
+    somarDias: somarDias, diasEntre: diasEntre, diaDaSemana: diaDaSemana,
+    dataLonga: dataLonga, dataCurta: dataCurta, dataRelativa: dataRelativa,
+    ultimosDias: ultimosDias, inicioDaSemana: inicioDaSemana, diasDaSemana: diasDaSemana,
+    minutosDe: minutosDe, hhmm: hhmm, faixa: faixa, duracaoTexto: duracaoTexto, horasTexto: horasTexto,
+    periodoDe: periodoDe, id: id, pct: pct, plural: plural, simples: simples, el: el
   };
 })();

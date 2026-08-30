@@ -1,4 +1,4 @@
-/* Tela "Ajustes": preferências, backup dos dados e recomeço. */
+/* Tela "Ajustes": preferências, backup e recomeço. */
 (function () {
   'use strict';
 
@@ -14,7 +14,7 @@
     a.click();
     document.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
-    ui.toast('Backup salvo: ' + nome);
+    ui.aviso('Backup salvo: ' + nome);
   }
 
   function restaurarBackup(store) {
@@ -27,11 +27,10 @@
       leitor.onload = function () {
         try {
           store.importar(String(leitor.result));
-          ui.toast('Backup restaurado');
+          App.aplicarTema();
+          ui.aviso('Backup restaurado');
           App.render();
-        } catch (e) {
-          ui.toast('Arquivo inválido');
-        }
+        } catch (e) { ui.aviso('Arquivo inválido'); }
       };
       leitor.readAsText(arquivo);
     });
@@ -41,102 +40,137 @@
   }
 
   function bloco(titulo, descricao, filhos) {
-    return el('div.card.stack.stack--tight', {}, [
-      el('div.item__title', { text: titulo }),
-      descricao ? el('p.tiny.muted', { text: descricao }) : null,
-      el('div.row', {}, filhos)
+    return el('div.cartao.pilha.pilha--junta', {}, [
+      el('div.item__titulo', { text: titulo }),
+      descricao ? el('p.mini.sub', { text: descricao }) : null,
+      el('div.linha-btn', {}, filhos)
     ].filter(Boolean));
   }
+
+  var SECOES = [
+    { chave: 'objetivos', nome: '🎯 Objetivos' },
+    { chave: 'estudos', nome: '📚 Estudos' },
+    { chave: 'autocuidado', nome: '✨ Autocuidado' },
+    { chave: 'espiritual', nome: '🕊️ Vida espiritual' }
+  ];
 
   App.views = App.views || {};
   App.views.ajustes = {
     titulo: 'Ajustes',
     render: function (store) {
-      var ajustes = store.estado.ajustes;
+      var a = store.estado.ajustes;
       var e = store.estado;
 
       var campoNome = el('input', {
-        type: 'text', value: ajustes.nome, placeholder: 'Como quer ser chamada?',
-        'aria-label': 'Seu nome',
+        type: 'text', value: a.nome, placeholder: 'Como você quer ser chamada?', 'aria-label': 'Seu nome',
         onchange: function () {
-          var valor = campoNome.value.trim();
-          store.commit(function (s) { s.ajustes.nome = valor; });
-          ui.toast('Prontinho');
+          var v = campoNome.value.trim();
+          store.commit(function (s) { s.ajustes.nome = v; });
+          ui.aviso('Prontinho');
         }
       });
 
-      var temas = [
-        { v: 'auto', r: 'Automático' },
-        { v: 'light', r: 'Claro' },
-        { v: 'dark', r: 'Escuro' }
-      ];
+      function campoHora(chave, rotulo) {
+        var input = el('input', {
+          type: 'time', value: a[chave], 'aria-label': rotulo,
+          onchange: function () {
+            var v = input.value;
+            store.commit(function (s) { s.ajustes[chave] = v; });
+            ui.aviso('Horário salvo');
+          }
+        });
+        return el('div.campo', {}, [el('label', { text: rotulo }), input]);
+      }
 
-      return el('div.stack', { style: 'margin-top:8px' }, [
-        el('div.card.stack.stack--tight', {}, [
-          el('div.item__title', { text: 'Seu nome' }),
-          el('div.field', {}, [campoNome]),
-          el('p.tiny.muted', { text: 'Usado apenas na saudação da tela Hoje.' })
+      return el('div.pilha', { style: 'margin-top:8px' }, [
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Seu nome' }),
+          el('div.campo', {}, [campoNome]),
+          el('p.mini.fraco', { text: 'Usado só na saudação da tela Hoje.' })
         ]),
 
-        bloco('Aparência', 'Vale para este aparelho.', temas.map(function (t) {
-          var ativo = ajustes.tema === t.v;
-          return el('button' + (ativo ? '.btn.btn--sm.btn--primary' : '.btn.btn--sm.btn--ghost'), {
-            type: 'button', text: t.r,
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Meus horários' }),
+          el('p.mini.sub', { text: 'O assistente usa esses limites para saber onde cabe cada coisa.' }),
+          el('div.duo', {}, [campoHora('acordar', 'Costumo acordar'), campoHora('dormir', 'Costumo dormir')])
+        ]),
+
+        bloco('Aparência', 'Vale para este aparelho.', ['auto', 'claro', 'escuro'].map(function (t) {
+          var rotulos = { auto: 'Automático', claro: 'Claro', escuro: 'Escuro' };
+          return el('button.btn.btn--p' + (a.tema === t ? '.btn--principal' : '.btn--fantasma'), {
+            type: 'button', text: rotulos[t],
             onclick: function () {
-              store.commit(function (s) { s.ajustes.tema = t.v; });
+              store.commit(function (s) { s.ajustes.tema = t; });
               App.aplicarTema();
               App.render();
             }
           });
         })),
 
-        bloco('Backup', 'Seus dados ficam só neste aparelho. Guarde uma cópia de vez em quando.', [
-          el('button.btn.btn--sm', { type: 'button', text: '⤓ Baixar backup', onclick: function () { baixarBackup(store); } }),
-          el('button.btn.btn--sm', { type: 'button', text: '⤒ Restaurar backup', onclick: function () { restaurarBackup(store); } })
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Áreas que quero ver' }),
+          el('p.mini.sub', { text: 'Desligue o que não faz sentido para você — o app não precisa ter tudo.' }),
+          el('div.linha-btn', {}, SECOES.map(function (s) {
+            var ativo = a.secoes[s.chave] !== false;
+            return el('button.opcao', {
+              type: 'button', text: s.nome, 'aria-pressed': ativo ? 'true' : 'false',
+              onclick: function () {
+                store.commit(function (st) { st.ajustes.secoes[s.chave] = !ativo; });
+                App.render();
+              }
+            });
+          }))
         ]),
 
-        bloco('Rotina de exemplo', 'Substitui atividades, hábitos e tarefas pelo modelo inicial.', [
-          el('button.btn.btn--sm', {
+        bloco('Backup', 'Tudo fica só neste aparelho. Guarde uma cópia de vez em quando.', [
+          el('button.btn.btn--p', { type: 'button', text: '⤓ Baixar backup', onclick: function () { baixarBackup(store); } }),
+          el('button.btn.btn--p', { type: 'button', text: '⤒ Restaurar backup', onclick: function () { restaurarBackup(store); } })
+        ]),
+
+        bloco('Rotina de exemplo', 'Substitui tudo pelo modelo inicial, com rotina, rituais, cuidados e matérias.', [
+          el('button.btn.btn--p', {
             type: 'button', text: 'Carregar exemplo',
             onclick: function () {
               if (!confirm('Isso substitui sua rotina atual pelo exemplo. Continuar?')) return;
               store.semear();
-              ui.toast('Exemplo carregado');
+              ui.aviso('Exemplo carregado');
               App.render();
             }
           })
         ]),
 
-        bloco('Recomeçar', 'Apaga o histórico de marcações. Você escolhe se mantém a rotina.', [
-          el('button.btn.btn--sm.btn--danger', {
+        bloco('Recomeçar', 'Você escolhe se mantém a estrutura (rotina, rituais, matérias) ou apaga tudo.', [
+          el('button.btn.btn--p.btn--perigo', {
             type: 'button', text: 'Limpar histórico',
             onclick: function () {
-              if (!confirm('Apagar o histórico de marcações e as tarefas, mantendo atividades e hábitos?')) return;
+              if (!confirm('Apagar marcações, tarefas, sessões e revisões, mantendo a estrutura?')) return;
               store.limpar(true);
-              ui.toast('Histórico limpo');
+              ui.aviso('Histórico limpo');
               App.render();
             }
           }),
-          el('button.btn.btn--sm.btn--danger', {
+          el('button.btn.btn--p.btn--perigo', {
             type: 'button', text: 'Apagar tudo',
             onclick: function () {
-              if (!confirm('Apagar TUDO: rotina, hábitos, tarefas e histórico. Tem certeza?')) return;
+              if (!confirm('Apagar TUDO mesmo? Não dá para desfazer.')) return;
               store.limpar(false);
-              ui.toast('Tudo apagado');
+              ui.aviso('Tudo apagado');
               App.render();
             }
           })
         ]),
 
-        el('div.card.stack.stack--tight', {}, [
-          el('div.item__title', { text: 'Sobre' }),
-          el('p.tiny.muted', { text:
-            'Minha Rotina funciona sem internet e não envia nada para lugar nenhum: ' +
-            'tudo fica salvo no armazenamento deste navegador. ' +
-            'No celular, use "Adicionar à tela de início" para abrir como aplicativo.' }),
-          el('p.tiny.muted', { text:
-            e.blocos.length + ' atividades · ' + e.habitos.length + ' hábitos · ' +
-            e.tarefas.length + ' tarefas · ' + Object.keys(e.registro).length + ' dias registrados' })
+        el('div.cartao.pilha.pilha--junta', {}, [
+          el('div.item__titulo', { text: 'Sobre' }),
+          el('p.mini.sub', { text: 'Minha Rotina funciona sem internet e não envia nada para lugar nenhum. ' +
+            'No celular, use “Adicionar à tela de início” para abrir como aplicativo.' }),
+          el('p.mini.fraco', { text:
+            e.blocos.length + ' atividades · ' + e.eventos.length + ' compromissos · ' +
+            e.rituais.length + ' rituais · ' + e.tarefas.length + ' tarefas · ' +
+            e.objetivos.length + ' objetivos · ' + e.disciplinas.length + ' disciplinas · ' +
+            Object.keys(e.registro).length + ' dias registrados' }),
+          el('p.mini.fraco', { style: 'font-style:italic',
+            text: 'Organizar a vida para vivê-la melhor — não viver para cumprir a organização.' })
         ])
       ]);
     }

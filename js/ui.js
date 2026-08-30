@@ -1,5 +1,4 @@
-/* Componentes de interface reaproveitados pelas telas:
-   painel de formulário, avisos, anel de progresso e itens de lista. */
+/* Peças de interface reaproveitadas por todas as telas. */
 (function () {
   'use strict';
 
@@ -7,238 +6,291 @@
   var u = App.util;
   var el = u.el;
 
-  var backdrop, sheet, sheetTitulo, sheetForm, toastEl, toastTimer;
+  var fundo, painel, painelTitulo, painelForm, recadoEl, recadoTimer;
 
   function iniciar() {
-    backdrop = document.getElementById('sheetBackdrop');
-    sheet = document.getElementById('sheet');
-    sheetTitulo = document.getElementById('sheetTitle');
-    sheetForm = document.getElementById('sheetForm');
-    toastEl = document.getElementById('toast');
+    fundo = document.getElementById('fundoPainel');
+    painel = document.getElementById('painel');
+    painelTitulo = document.getElementById('painelTitulo');
+    painelForm = document.getElementById('painelForm');
+    recadoEl = document.getElementById('recado');
 
-    backdrop.addEventListener('click', function (e) {
-      if (e.target === backdrop) fecharPainel();
-    });
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape' && !backdrop.hidden) fecharPainel();
+    fundo.addEventListener('click', function (ev) { if (ev.target === fundo) fechar(); });
+    document.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Escape' && !fundo.hidden) fechar();
     });
   }
 
-  function toast(msg) {
-    toastEl.textContent = msg;
-    toastEl.hidden = false;
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(function () { toastEl.hidden = true; }, 2200);
+  function aviso(msg) {
+    recadoEl.textContent = msg;
+    recadoEl.hidden = false;
+    clearTimeout(recadoTimer);
+    recadoTimer = setTimeout(function () { recadoEl.hidden = true; }, 2400);
   }
 
-  function fecharPainel() {
-    backdrop.hidden = true;
-    sheetForm.innerHTML = '';
+  function fechar() {
+    fundo.hidden = true;
+    painelForm.innerHTML = '';
+    painelForm.onsubmit = null;
   }
 
-  /* Monta um campo do formulário e devolve como ler seu valor. */
+  /* ---------------------------------------- formulário em painel */
+
   function campo(def, valores) {
-    var wrap = el('div.field');
-    var idCampo = 'f_' + def.nome;
+    var wrap = el('div.campo');
+    var idc = 'c_' + def.nome;
     var ler;
 
-    if (def.tipo !== 'dias') {
-      wrap.appendChild(el('label', { for: idCampo, text: def.rotulo }));
-    } else {
-      wrap.appendChild(el('label', { text: def.rotulo }));
-    }
+    wrap.appendChild(el('label', { for: def.tipo === 'dias' || def.tipo === 'opcoes' ? null : idc, text: def.rotulo }));
 
-    if (def.tipo === 'texto' || def.tipo === 'hora' || def.tipo === 'numero' || def.tipo === 'data') {
-      var tipoHtml = { texto: 'text', hora: 'time', numero: 'number', data: 'date' }[def.tipo];
+    if (['texto', 'hora', 'numero', 'data'].indexOf(def.tipo) !== -1) {
+      var tipos = { texto: 'text', hora: 'time', numero: 'number', data: 'date' };
       var input = el('input', {
-        id: idCampo,
-        type: tipoHtml,
+        id: idc, type: tipos[def.tipo],
         value: valores[def.nome] === null || valores[def.nome] === undefined ? '' : valores[def.nome],
-        placeholder: def.dica || '',
-        min: def.min,
-        max: def.max,
-        step: def.passo,
-        inputmode: def.tipo === 'numero' ? 'numeric' : null,
-        autocomplete: 'off'
+        placeholder: def.dica || '', min: def.min, max: def.max, step: def.passo,
+        inputmode: def.tipo === 'numero' ? 'numeric' : null, autocomplete: 'off'
       });
       wrap.appendChild(input);
       ler = function () {
         var v = input.value.trim();
-        if (def.tipo === 'numero') return v === '' ? 0 : Number(v);
-        return v;
+        return def.tipo === 'numero' ? (v === '' ? 0 : Number(v)) : v;
       };
 
     } else if (def.tipo === 'texto-longo') {
-      var area = el('textarea', { id: idCampo, placeholder: def.dica || '' });
+      var area = el('textarea', { id: idc, placeholder: def.dica || '', rows: def.linhas || 3 });
       area.value = valores[def.nome] || '';
       wrap.appendChild(area);
       ler = function () { return area.value.trim(); };
 
     } else if (def.tipo === 'selecao') {
-      var sel = el('select', { id: idCampo }, def.opcoes.map(function (o) {
-        return el('option', { value: o.valor, text: o.rotulo, selected: valores[def.nome] === o.valor });
+      var sel = el('select', { id: idc }, def.opcoes.map(function (o) {
+        return el('option', { value: o.valor, text: o.rotulo, selected: String(valores[def.nome]) === String(o.valor) });
       }));
       wrap.appendChild(sel);
       ler = function () { return sel.value; };
 
+    } else if (def.tipo === 'opcoes') {
+      var escolhido = valores[def.nome];
+      var caixa = el('div.opcoes');
+      def.opcoes.forEach(function (o) {
+        var b = el('button.opcao', {
+          type: 'button', text: o.rotulo,
+          'aria-pressed': String(escolhido) === String(o.valor) ? 'true' : 'false',
+          onclick: function () {
+            escolhido = o.valor;
+            Array.prototype.forEach.call(caixa.children, function (c) { c.setAttribute('aria-pressed', 'false'); });
+            b.setAttribute('aria-pressed', 'true');
+          }
+        });
+        caixa.appendChild(b);
+      });
+      wrap.appendChild(caixa);
+      ler = function () { return escolhido; };
+
     } else if (def.tipo === 'dias') {
       var marcados = (valores[def.nome] || []).slice();
-      var linha = el('div.days');
+      var linha = el('div.dias');
       u.DIAS_MINI.forEach(function (letra, i) {
         var ativo = marcados.indexOf(i) !== -1;
-        var pill = el('button.days__pill', {
-          type: 'button',
-          text: letra,
-          title: u.DIAS_CURTOS[i],
+        var p = el('button.dias__pilula', {
+          type: 'button', text: letra, title: u.DIAS_CURTOS[i],
           'aria-pressed': ativo ? 'true' : 'false',
           onclick: function () {
             var pos = marcados.indexOf(i);
             if (pos === -1) marcados.push(i); else marcados.splice(pos, 1);
-            pill.setAttribute('aria-pressed', pos === -1 ? 'true' : 'false');
+            p.setAttribute('aria-pressed', pos === -1 ? 'true' : 'false');
           }
         });
-        linha.appendChild(pill);
+        linha.appendChild(p);
       });
       wrap.appendChild(linha);
       ler = function () { return marcados.slice().sort(); };
 
     } else if (def.tipo === 'alternar') {
-      var check = el('input', { id: idCampo, type: 'checkbox' });
+      var check = el('input', { id: idc, type: 'checkbox' });
       check.checked = !!valores[def.nome];
       check.style.width = 'auto';
+      check.style.justifySelf = 'start';
       wrap.appendChild(check);
       ler = function () { return check.checked; };
+
+    } else if (def.tipo === 'lista') {
+      /* Lista editável de textos curtos (itens de ritual, passos de objetivo). */
+      var itens = (valores[def.nome] || []).map(function (x) {
+        return typeof x === 'string' ? { titulo: x } : Object.assign({}, x);
+      });
+      var caixaLista = el('div.pilha.pilha--junta');
+
+      function desenhar() {
+        caixaLista.innerHTML = '';
+        itens.forEach(function (item, i) {
+          var inp = el('input', {
+            type: 'text', value: item.titulo, placeholder: 'Item',
+            oninput: function () { item.titulo = inp.value; }
+          });
+          caixaLista.appendChild(el('div', { style: 'display:flex;gap:8px' }, [
+            inp,
+            el('button.btn.btn--p.btn--fantasma', {
+              type: 'button', text: '×', 'aria-label': 'Remover item',
+              onclick: function () { itens.splice(i, 1); desenhar(); }
+            })
+          ]));
+        });
+        caixaLista.appendChild(el('button.btn.btn--p.btn--suave', {
+          type: 'button', text: '+ Adicionar item',
+          onclick: function () { itens.push({ id: u.id(), titulo: '' }); desenhar(); }
+        }));
+      }
+      desenhar();
+      wrap.appendChild(caixaLista);
+      ler = function () {
+        return itens.filter(function (i) { return i.titulo.trim(); })
+          .map(function (i) { return { id: i.id || u.id(), titulo: i.titulo.trim(), feito: !!i.feito }; });
+      };
     }
 
-    if (def.ajuda) wrap.appendChild(el('div.field__hint', { text: def.ajuda }));
-
+    if (def.ajuda) wrap.appendChild(el('div.campo__dica', { text: def.ajuda }));
     return { node: wrap, ler: ler, def: def };
   }
 
-  /* Abre o painel inferior com um formulário.
-     campos: [{nome, rotulo, tipo, obrigatorio, ...}]
-     aoSalvar(valores) — devolver false cancela o fechamento. */
-  function abrirFormulario(opcoes) {
-    sheetTitulo.textContent = opcoes.titulo;
-    sheetForm.innerHTML = '';
+  function abrirFormulario(op) {
+    painelTitulo.textContent = op.titulo;
+    painelForm.innerHTML = '';
 
-    var valores = opcoes.valores || {};
-    var campos = opcoes.campos.map(function (def) { return campo(def, valores); });
+    var valores = op.valores || {};
+    var campos = op.campos.map(function (def) { return campo(def, valores); });
 
     campos.forEach(function (c) {
-      if (c.def.junto && sheetForm.lastChild && sheetForm.lastChild.classList.contains('grid-2')
-          && sheetForm.lastChild.childElementCount < 2) {
-        sheetForm.lastChild.appendChild(c.node);
+      var ultimo = painelForm.lastChild;
+      if (c.def.junto && ultimo && ultimo.classList && ultimo.classList.contains('duo') && ultimo.childElementCount < 2) {
+        ultimo.appendChild(c.node);
       } else if (c.def.junto) {
-        sheetForm.appendChild(el('div.grid-2', {}, [c.node]));
+        painelForm.appendChild(el('div.duo', {}, [c.node]));
       } else {
-        sheetForm.appendChild(c.node);
+        painelForm.appendChild(c.node);
       }
     });
 
-    var acoes = el('div.row.row--end', {}, [
-      opcoes.aoExcluir
-        ? el('button.btn.btn--danger', {
-            type: 'button',
-            text: 'Excluir',
-            onclick: function () {
-              if (confirm('Excluir "' + (valores.titulo || 'este item') + '"? Isso não pode ser desfeito.')) {
-                opcoes.aoExcluir();
-                fecharPainel();
-              }
-            }
-          })
-        : null,
-      el('button.btn.btn--ghost', { type: 'button', text: 'Cancelar', onclick: fecharPainel }),
-      el('button.btn.btn--primary', { type: 'submit', text: opcoes.rotuloSalvar || 'Salvar' })
+    var acoes = el('div.linha-btn.linha-btn--fim', { style: 'margin-top:6px' }, [
+      op.aoExcluir ? el('button.btn.btn--perigo', {
+        type: 'button', text: 'Excluir',
+        onclick: function () {
+          if (confirm('Excluir "' + (valores.titulo || 'este item') + '"?')) { op.aoExcluir(); fechar(); }
+        }
+      }) : null,
+      el('button.btn.btn--fantasma', { type: 'button', text: 'Cancelar', onclick: fechar }),
+      el('button.btn.btn--principal', { type: 'submit', text: op.rotuloSalvar || 'Salvar' })
     ]);
-    acoes.style.marginTop = '4px';
-    sheetForm.appendChild(acoes);
+    painelForm.appendChild(acoes);
 
-    sheetForm.onsubmit = function (e) {
-      e.preventDefault();
-      var out = {};
-      var faltando = null;
-
+    painelForm.onsubmit = function (ev) {
+      ev.preventDefault();
+      var out = {}, faltando = null;
       campos.forEach(function (c) {
         var v = c.ler();
         out[c.def.nome] = v;
-        if (c.def.obrigatorio && (v === '' || (Array.isArray(v) && !v.length))) {
+        if (c.def.obrigatorio && (v === '' || v === null || (Array.isArray(v) && !v.length))) {
           faltando = faltando || c.def.rotulo;
         }
       });
-
-      if (faltando) { toast('Preencha: ' + faltando); return; }
-      if (opcoes.aoSalvar(out) !== false) fecharPainel();
+      if (faltando) { aviso('Falta preencher: ' + faltando); return; }
+      if (op.aoSalvar(out) !== false) fechar();
     };
 
-    backdrop.hidden = false;
-    var primeiro = sheetForm.querySelector('input, textarea, select');
-    if (primeiro && primeiro.type !== 'time') setTimeout(function () { primeiro.focus(); }, 60);
+    fundo.hidden = false;
+    var primeiro = painelForm.querySelector('input[type="text"], textarea');
+    if (primeiro) setTimeout(function () { primeiro.focus(); }, 80);
   }
 
-  /* Anel de progresso em SVG. */
-  function anel(porcento) {
-    var raio = 32, circ = 2 * Math.PI * raio;
-    var offset = circ * (1 - Math.max(0, Math.min(100, porcento)) / 100);
-    var ns = 'http://www.w3.org/2000/svg';
+  /* Painel com conteúdo livre (não é formulário). */
+  function abrirPainel(titulo, filhos) {
+    painelTitulo.textContent = titulo;
+    painelForm.innerHTML = '';
+    painelForm.onsubmit = function (ev) { ev.preventDefault(); };
+    [].concat(filhos).forEach(function (f) { if (f) painelForm.appendChild(f); });
+    fundo.hidden = false;
+  }
 
-    var svg = document.createElementNS(ns, 'svg');
-    svg.setAttribute('width', '76');
-    svg.setAttribute('height', '76');
-    svg.setAttribute('viewBox', '0 0 76 76');
-    svg.setAttribute('aria-hidden', 'true');
+  /* ------------------------------------------------- componentes */
 
-    [['ring__track', circ, 0], ['ring__bar', circ, offset]].forEach(function (cfg) {
-      var c = document.createElementNS(ns, 'circle');
-      c.setAttribute('class', cfg[0]);
-      c.setAttribute('cx', '38');
-      c.setAttribute('cy', '38');
-      c.setAttribute('r', String(raio));
-      c.setAttribute('fill', 'none');
-      c.setAttribute('stroke-width', '7');
-      c.setAttribute('stroke-dasharray', String(cfg[1]));
-      c.setAttribute('stroke-dashoffset', String(cfg[2]));
-      svg.appendChild(c);
-    });
+  function ponto(cor) { return el('span.ponto', { style: 'background:' + cor }); }
 
-    return el('div.ring', { role: 'img', 'aria-label': porcento + '% do dia concluído' }, [
-      svg,
-      el('div.ring__label', { text: porcento + '%' })
+  function etiqueta(texto, cor) {
+    return el('span.etiqueta' + (cor ? '.etiqueta--' + cor : ''), { text: texto });
+  }
+
+  /* Item da linha do dia. */
+  function itemLinha(op) {
+    var classes = 'div.item' + (op.feito ? '.item--feito' : '') + (op.agora ? '.item--agora' : '')
+      + (op.aoAbrir ? '.item--clicavel' : '');
+    return el(classes, {}, [
+      op.hora !== undefined ? el('span.item__hora', { text: op.hora || '—' }) : null,
+      el('div.item__corpo', { onclick: op.aoAbrir || null }, [
+        el('div.item__titulo', { text: op.titulo }),
+        op.meta && op.meta.length ? el('div.item__meta', {}, op.meta) : null,
+        op.nota ? el('div.item__nota', { text: op.nota }) : null,
+        op.extra || null
+      ]),
+      op.aoMarcar ? el('button.check', {
+        type: 'button', text: '✓',
+        'aria-pressed': op.feito ? 'true' : 'false',
+        'aria-label': (op.feito ? 'Desmarcar ' : 'Marcar ') + op.titulo,
+        onclick: op.aoMarcar
+      }) : (op.direita || null)
     ]);
   }
 
-  /* Item de lista com caixa de seleção à esquerda. */
-  function itemMarcavel(opcoes) {
-    var classes = 'div.item' + (opcoes.feito ? '.item--done' : '');
-    return el(classes, {}, [
-      el('button.item__check', {
-        type: 'button',
-        text: '✓',
-        'aria-pressed': opcoes.feito ? 'true' : 'false',
-        'aria-label': (opcoes.feito ? 'Desmarcar ' : 'Marcar ') + opcoes.titulo,
-        onclick: opcoes.aoMarcar
+  function linhaCheck(titulo, feito, aoMarcar) {
+    return el('div.check-linha' + (feito ? '.check-linha--feito' : ''), { onclick: aoMarcar }, [
+      el('button.check', {
+        type: 'button', text: '✓', 'aria-pressed': feito ? 'true' : 'false',
+        'aria-label': (feito ? 'Desmarcar ' : 'Marcar ') + titulo,
+        onclick: function (ev) { ev.stopPropagation(); aoMarcar(); }
       }),
-      opcoes.hora ? el('span.item__time', { text: opcoes.hora }) : null,
-      el('div.item__body', { onclick: opcoes.aoAbrir || null, style: opcoes.aoAbrir ? 'cursor:pointer' : null }, [
-        el('div.item__title', { text: opcoes.titulo }),
-        opcoes.meta && opcoes.meta.length ? el('div.item__meta', {}, opcoes.meta) : null
-      ]),
-      opcoes.direita || null
+      el('span', { text: titulo })
+    ]);
+  }
+
+  function tituloSecao(texto, direita) {
+    return el('div.titulo-secao', {}, [
+      el('h2', { text: texto }),
+      typeof direita === 'string' ? el('span', { text: direita }) : (direita || null)
     ]);
   }
 
   function vazio(titulo, texto) {
-    return el('div.empty', {}, [el('strong', { text: titulo }), texto || '']);
+    return el('div.vazio', {}, [el('strong', { text: titulo }), texto || '']);
+  }
+
+  function avisoCartao(a) {
+    return el('div.aviso.aviso--' + (a.tom || 'cuidado'), {}, [
+      el('div.aviso__titulo', { text: a.titulo }),
+      el('div.aviso__texto', { text: a.texto }),
+      a.acao ? el('button.btn.btn--p', {
+        type: 'button', text: a.acao.rotulo,
+        onclick: function () {
+          if (a.acao.rota) location.hash = a.acao.rota;
+          else if (a.acao.executar) {
+            var r = a.acao.executar();
+            aviso(r ? 'Pronto, reservei às ' + r : 'Não achei espaço livre no dia');
+            App.render();
+          }
+        }
+      }) : null
+    ]);
+  }
+
+  function barraProgresso(porcento) {
+    return el('div.progresso', { role: 'img', 'aria-label': porcento + '% concluído' }, [
+      el('div.progresso__barra', { style: 'width:' + Math.max(2, porcento) + '%' })
+    ]);
   }
 
   App.ui = {
-    iniciar: iniciar,
-    toast: toast,
-    abrirFormulario: abrirFormulario,
-    fecharPainel: fecharPainel,
-    anel: anel,
-    itemMarcavel: itemMarcavel,
-    vazio: vazio
+    iniciar: iniciar, aviso: aviso, fechar: fechar,
+    abrirFormulario: abrirFormulario, abrirPainel: abrirPainel,
+    ponto: ponto, etiqueta: etiqueta, itemLinha: itemLinha, linhaCheck: linhaCheck,
+    tituloSecao: tituloSecao, vazio: vazio, avisoCartao: avisoCartao, barraProgresso: barraProgresso
   };
 })();
