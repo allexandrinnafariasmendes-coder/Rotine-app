@@ -1,5 +1,5 @@
 /* Cache simples para o app abrir sem internet. */
-var CACHE = 'minha-rotina-v4';
+var CACHE = 'minha-rotina-v5';
 var ARQUIVOS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ var ARQUIVOS = [
   './assets/icon-180.png',
   './assets/icon-maskable.svg',
   './js/util.js',
+  './js/rotina-base.js',
   './js/store.js',
   './js/motor.js',
   './js/ui.js',

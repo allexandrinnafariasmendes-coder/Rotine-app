@@ -114,7 +114,7 @@
       });
 
       var campoLema = el('input', {
-        type: 'text', value: a.lema, placeholder: 'Ad Deum per vitam ordinariam.', 'aria-label': 'Lema',
+        type: 'text', value: a.lema, placeholder: store.exemploDeLema(), 'aria-label': 'Lema',
         onchange: function () {
           var v = campoLema.value.trim();
           store.commit(function (st) { st.ajustes.lema = v; });
@@ -213,12 +213,12 @@
           el('button.btn.btn--p', { type: 'button', text: '⤒ Restaurar backup', onclick: function () { restaurarBackup(store); } })
         ]),
 
-        bloco('Rotina "Fé, estudo e disciplina"',
-          'Carrega o quadro semanal inteiro: horários de segunda a domingo, checklist diário, oração da noite, prioridades, lema e as saídas para os dias pesados.', [
+        bloco('Rotina "' + store.nomeDoQuadro() + '"',
+          'Carrega o quadro inteiro: horários da semana, rituais, prioridades, lema e as saídas para os dias pesados.', [
           el('button.btn.btn--p', {
             type: 'button', text: 'Carregar a rotina do quadro',
             onclick: function () {
-              if (!confirm('Isso substitui a rotina atual pelo quadro "Fé, estudo e disciplina". Continuar?')) return;
+              if (!confirm('Isso substitui a rotina atual pelo quadro "' + store.nomeDoQuadro() + '". Continuar?')) return;
               store.semear();
               ui.aviso('Rotina carregada');
               App.render();

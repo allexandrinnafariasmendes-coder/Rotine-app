@@ -740,90 +740,26 @@ a { color: inherit; text-decoration: none; }
 
 </script>
   <script>
-/* Estado do aplicativo. Tudo fica no localStorage do próprio aparelho. */
+/* Quadro "Fé, estudo e disciplina" — a rotina que alimenta o app.
+
+   Este arquivo é a única parte pessoal do projeto: trocá-lo troca a rotina
+   inicial sem mexer em mais nada. `id` identifica o quadro, `versao` sobe a
+   cada mudança e `notas` conta o que mudou, para o app poder avisar e aplicar
+   sem apagar marcações. */
 (function () {
   'use strict';
 
-  var App = window.App;
-  var u = App.util;
+  var App = window.App || (window.App = {});
 
-  var CHAVE = 'minha-rotina:v2';
-
-  /* Versão da rotina "Fé, estudo e disciplina". Quando ela muda, o app avisa
-     e oferece aplicar a mudança sem apagar marcações, tarefas nem histórico.
-     Ao mexer no quadro: suba o número e escreva aqui o que mudou. */
-  var VERSAO_ROTINA = 2;
-  var NOTAS_ROTINA = {
-    2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.'
-  };
-  var CHAVE_ANTIGA = 'minha-rotina:v1';
-  var VERSAO = 2;
-
-  /* Áreas da vida. As cores são pigmentos discretos: aparecem só como
-     um ponto ao lado do nome, nunca como fundo. */
-  var AREAS = {
-    sono:        { nome: 'Sono',         cor: '#7B85A6', grupo: 'recuperar' },
-    escola:      { nome: 'Escola',       cor: '#6E90A8', grupo: 'obrigacao' },
-    estudo:      { nome: 'Estudo',       cor: '#5E82A0', grupo: 'obrigacao' },
-    exercicio:   { nome: 'Exercício',    cor: '#7A9472', grupo: 'corpo' },
-    compromisso: { nome: 'Compromisso',  cor: '#9A7286', grupo: 'obrigacao' },
-    autocuidado: { nome: 'Autocuidado',  cor: '#B6828A', grupo: 'corpo' },
-    alimentacao: { nome: 'Alimentação',  cor: '#B08A55', grupo: 'corpo' },
-    descanso:    { nome: 'Descanso',     cor: '#7E9A80', grupo: 'recuperar' },
-    hobby:       { nome: 'Hobby',        cor: '#8E7DA6', grupo: 'recuperar' },
-    casa:        { nome: 'Casa',         cor: '#9C845F', grupo: 'obrigacao' },
-    espiritual:  { nome: 'Espiritual',   cor: '#6F80A0', grupo: 'alma' },
-    pessoal:     { nome: 'Pessoal',      cor: '#A98F4E', grupo: 'recuperar' }
-  };
-
-  /* Áreas que contam como recuperação — o app cobra a presença delas no dia. */
-  var AREAS_DESCANSO = ['descanso', 'hobby', 'sono', 'pessoal'];
-
-  var AREAS_OBJETIVO = {
-    estudos: { nome: 'Estudos' },
-    futuro:  { nome: 'Futuro' },
-    eu:      { nome: 'Eu' },
-    casa:    { nome: 'Casa' },
-    vida:    { nome: 'Vida pessoal' }
-  };
-
-  var ouvintes = [];
-  var estado = null;
-
-  function estadoInicial() {
-    return {
-      versao: VERSAO,
-      ajustes: {
-        nome: '',
-        tema: 'auto',
-        semeado: false,
-        acordar: '05:00',
-        dormir: '22:00',
-        lema: '',
-        prioridades: [],
-        secoes: { estudos: true, autocuidado: true, espiritual: true, objetivos: true }
-      },
-      alternativas: [],   /* saídas para os dias que não saem como o planejado */
-      blocos: [],      /* rotina recorrente */
-      eventos: [],     /* compromissos de um dia específico */
-      tarefas: [],
-      objetivos: [],
-      disciplinas: [],
-      sessoes: [],     /* sessões de estudo registradas */
-      rituais: [],     /* conjuntos de hábitos contextualizados */
-      cuidados: [],    /* autocuidado recorrente */
-      espiritual: { praticas: [], intencoes: [], diario: [] },
-      registro: {},    /* marcações por dia */
-      semanas: {},     /* reflexão semanal */
-      sessaoAtiva: null
-    };
-  }
-
-  /* ------------------------------------------------------ seed */
-
-  /* Rotina "Fé, estudo e disciplina", transcrita do quadro semanal.
-     Dias: 0 = domingo … 6 = sábado. */
-  function exemplo() {
+  App.rotinaBase = {
+    id: 'fe-estudo-disciplina',
+    nome: 'Fé, estudo e disciplina',
+    lemaExemplo: 'Ad Deum per vitam ordinariam.',
+    versao: 2,
+    notas: {
+      2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.'
+    },
+    montar: function (u) {
     var todos = [0, 1, 2, 3, 4, 5, 6];
     var semana = [1, 2, 3, 4, 5];
     var fimDeSemana = [0, 6];
@@ -934,6 +870,99 @@ a { color: inherit; text-decoration: none; }
       }
     };
   }
+  };
+})();
+
+</script>
+  <script>
+/* Estado do aplicativo. Tudo fica no localStorage do próprio aparelho. */
+(function () {
+  'use strict';
+
+  var App = window.App;
+  var u = App.util;
+
+  var CHAVE = 'minha-rotina:v2';
+
+
+  var CHAVE_ANTIGA = 'minha-rotina:v1';
+  var VERSAO = 2;
+
+  /* Áreas da vida. As cores são pigmentos discretos: aparecem só como
+     um ponto ao lado do nome, nunca como fundo. */
+  var AREAS = {
+    sono:        { nome: 'Sono',         cor: '#7B85A6', grupo: 'recuperar' },
+    escola:      { nome: 'Escola',       cor: '#6E90A8', grupo: 'obrigacao' },
+    estudo:      { nome: 'Estudo',       cor: '#5E82A0', grupo: 'obrigacao' },
+    exercicio:   { nome: 'Exercício',    cor: '#7A9472', grupo: 'corpo' },
+    compromisso: { nome: 'Compromisso',  cor: '#9A7286', grupo: 'obrigacao' },
+    autocuidado: { nome: 'Autocuidado',  cor: '#B6828A', grupo: 'corpo' },
+    alimentacao: { nome: 'Alimentação',  cor: '#B08A55', grupo: 'corpo' },
+    descanso:    { nome: 'Descanso',     cor: '#7E9A80', grupo: 'recuperar' },
+    hobby:       { nome: 'Hobby',        cor: '#8E7DA6', grupo: 'recuperar' },
+    casa:        { nome: 'Casa',         cor: '#9C845F', grupo: 'obrigacao' },
+    espiritual:  { nome: 'Espiritual',   cor: '#6F80A0', grupo: 'alma' },
+    pessoal:     { nome: 'Pessoal',      cor: '#A98F4E', grupo: 'recuperar' }
+  };
+
+  /* Áreas que contam como recuperação — o app cobra a presença delas no dia. */
+  var AREAS_DESCANSO = ['descanso', 'hobby', 'sono', 'pessoal'];
+
+  var AREAS_OBJETIVO = {
+    estudos: { nome: 'Estudos' },
+    futuro:  { nome: 'Futuro' },
+    eu:      { nome: 'Eu' },
+    casa:    { nome: 'Casa' },
+    vida:    { nome: 'Vida pessoal' }
+  };
+
+  var ouvintes = [];
+  var estado = null;
+
+  function estadoInicial() {
+    return {
+      versao: VERSAO,
+      ajustes: {
+        nome: '',
+        tema: 'auto',
+        semeado: false,
+        acordar: '05:00',
+        dormir: '22:00',
+        lema: '',
+        prioridades: [],
+        quadroId: '',
+        secoes: { estudos: true, autocuidado: true, espiritual: true, objetivos: true }
+      },
+      alternativas: [],   /* saídas para os dias que não saem como o planejado */
+      blocos: [],      /* rotina recorrente */
+      eventos: [],     /* compromissos de um dia específico */
+      tarefas: [],
+      objetivos: [],
+      disciplinas: [],
+      sessoes: [],     /* sessões de estudo registradas */
+      rituais: [],     /* conjuntos de hábitos contextualizados */
+      cuidados: [],    /* autocuidado recorrente */
+      espiritual: { praticas: [], intencoes: [], diario: [] },
+      registro: {},    /* marcações por dia */
+      semanas: {},     /* reflexão semanal */
+      sessaoAtiva: null
+    };
+  }
+
+  /* ------------------------------------------------------ seed */
+
+  /* O quadro vem de js/rotina-base.js — é a única parte pessoal do projeto.
+     Sem ele, o app simplesmente começa vazio. */
+  function quadro() {
+    return App.rotinaBase || { id: 'vazio', versao: 0, notas: {}, montar: function () { return {}; } };
+  }
+
+  function exemplo() { return quadro().montar(u); }
+
+  function nomeDoQuadro() { return quadro().nome || 'Rotina de exemplo'; }
+
+  /* Só um exemplo para o campo vazio de lema. */
+  function exemploDeLema() { return quadro().lemaExemplo || 'Uma frase que te lembre do que importa.'; }
 
   /* ---------------------------------------------- persistência */
 
@@ -953,8 +982,9 @@ a { color: inherit; text-decoration: none; }
        o aviso só aparece para mudanças daqui em diante. */
     base.ajustes.rotinaVersao = d.ajustes && d.ajustes.rotinaVersao !== undefined
       ? Number(d.ajustes.rotinaVersao)
-      : (base.ajustes.semeado ? VERSAO_ROTINA : 0);
+      : (base.ajustes.semeado ? quadro().versao : 0);
     base.ajustes.rotinaAdiada = Number((d.ajustes || {}).rotinaAdiada) || 0;
+    base.ajustes.quadroId = (d.ajustes || {}).quadroId || (base.ajustes.semeado ? quadro().id : '');
     base.ajustes.prioridades = (base.ajustes.prioridades || []).map(String);
 
     base.alternativas = (d.alternativas || []).map(function (a) {
@@ -1256,7 +1286,8 @@ a { color: inherit; text-decoration: none; }
     estadoAlvo.ajustes.acordar = '05:00';
     estadoAlvo.ajustes.dormir = '22:00';
     estadoAlvo.ajustes.semeado = true;
-    estadoAlvo.ajustes.rotinaVersao = VERSAO_ROTINA;
+    estadoAlvo.ajustes.rotinaVersao = quadro().versao;
+    estadoAlvo.ajustes.quadroId = quadro().id;
     estadoAlvo.ajustes.rotinaAdiada = 0;
   }
 
@@ -1269,19 +1300,22 @@ a { color: inherit; text-decoration: none; }
   function rotinaDesatualizada() {
     var a = estado.ajustes;
     if (!a.semeado) return null;
+    /* Uma rotina vinda de outro quadro nunca é sobrescrita por este. */
+    if (a.quadroId && a.quadroId !== quadro().id) return null;
+
     var atual = Number(a.rotinaVersao) || 0;
-    if (atual >= VERSAO_ROTINA) return null;
-    if (Number(a.rotinaAdiada) >= VERSAO_ROTINA) return null;
+    if (atual >= quadro().versao) return null;
+    if (Number(a.rotinaAdiada) >= quadro().versao) return null;
 
     var notas = [];
-    for (var v = atual + 1; v <= VERSAO_ROTINA; v++) {
-      if (NOTAS_ROTINA[v]) notas.push(NOTAS_ROTINA[v]);
+    for (var v = atual + 1; v <= quadro().versao; v++) {
+      if (quadro().notas[v]) notas.push(quadro().notas[v]);
     }
-    return { versao: VERSAO_ROTINA, notas: notas };
+    return { versao: quadro().versao, notas: notas };
   }
 
   function adiarAtualizacao() {
-    commit(function (s) { s.ajustes.rotinaAdiada = VERSAO_ROTINA; });
+    commit(function (s) { s.ajustes.rotinaAdiada = quadro().versao; });
   }
 
   /* Aplica a versão nova do quadro casando cada item pela chave: os horários
@@ -1329,7 +1363,8 @@ a { color: inherit; text-decoration: none; }
       });
       s.rituais = s.rituais.filter(function (r) { return !r.chave || chavesRituais[r.chave]; });
 
-      s.ajustes.rotinaVersao = VERSAO_ROTINA;
+      s.ajustes.rotinaVersao = quadro().versao;
+      s.ajustes.quadroId = quadro().id;
       s.ajustes.rotinaAdiada = 0;
     });
   }
@@ -1382,6 +1417,8 @@ a { color: inherit; text-decoration: none; }
     exportar: exportar,
     importar: importar,
     semear: semear,
+    nomeDoQuadro: nomeDoQuadro,
+    exemploDeLema: exemploDeLema,
     rotinaDesatualizada: rotinaDesatualizada,
     atualizarRotina: atualizarRotina,
     adiarAtualizacao: adiarAtualizacao,
@@ -4803,7 +4840,7 @@ a { color: inherit; text-decoration: none; }
       });
 
       var campoLema = el('input', {
-        type: 'text', value: a.lema, placeholder: 'Ad Deum per vitam ordinariam.', 'aria-label': 'Lema',
+        type: 'text', value: a.lema, placeholder: store.exemploDeLema(), 'aria-label': 'Lema',
         onchange: function () {
           var v = campoLema.value.trim();
           store.commit(function (st) { st.ajustes.lema = v; });
@@ -4902,12 +4939,12 @@ a { color: inherit; text-decoration: none; }
           el('button.btn.btn--p', { type: 'button', text: '⤒ Restaurar backup', onclick: function () { restaurarBackup(store); } })
         ]),
 
-        bloco('Rotina "Fé, estudo e disciplina"',
-          'Carrega o quadro semanal inteiro: horários de segunda a domingo, checklist diário, oração da noite, prioridades, lema e as saídas para os dias pesados.', [
+        bloco('Rotina "' + store.nomeDoQuadro() + '"',
+          'Carrega o quadro inteiro: horários da semana, rituais, prioridades, lema e as saídas para os dias pesados.', [
           el('button.btn.btn--p', {
             type: 'button', text: 'Carregar a rotina do quadro',
             onclick: function () {
-              if (!confirm('Isso substitui a rotina atual pelo quadro "Fé, estudo e disciplina". Continuar?')) return;
+              if (!confirm('Isso substitui a rotina atual pelo quadro "' + store.nomeDoQuadro() + '". Continuar?')) return;
               store.semear();
               ui.aviso('Rotina carregada');
               App.render();
