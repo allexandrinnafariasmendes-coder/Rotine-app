@@ -13,10 +13,11 @@
     id: 'fe-estudo-disciplina',
     nome: 'Fé, estudo e disciplina',
     lemaExemplo: 'Ad Deum per vitam ordinariam.',
-    versao: 3,
+    versao: 4,
     notas: {
       2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.',
-      3: 'Inglês no sábado, das 9h ao meio-dia. A administração da casa sai da manhã de sábado e vira meia hora por dia, às 6h, de segunda a sexta.'
+      3: 'Inglês no sábado, das 9h ao meio-dia. A administração da casa sai da manhã de sábado e vira meia hora por dia, às 6h, de segunda a sexta.',
+      4: 'Sai o exercício físico: treino, atividade de sábado, passeio de domingo, o item do checklist, a prioridade e a saída correspondente. O horário fica livre.'
     },
     montar: function (u) {
     var todos = [0, 1, 2, 3, 4, 5, 6];
@@ -34,7 +35,7 @@
 
     return {
       blocos: [
-        bloco('acordar', 'Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Água e alongamento leve.'),
+        bloco('acordar', 'Acordar · Oferecer o dia a Deus', '05:00', 30, todos, 'sono', true, 'Um copo de água ao acordar.'),
         bloco('oracao-manha', 'Oração da manhã · Leitura espiritual · Terço', '05:30', 30, todos, 'espiritual', false, ''),
         bloco('missa-fds', 'Missa', '06:00', 30, fimDeSemana, 'espiritual', true, ''),
         bloco('cafe', 'Café da manhã · Arrumar-se', '06:30', 30, todos, 'alimentacao', false, 'Preparar-se para o dia.'),
@@ -60,11 +61,8 @@
 
         /* Nos dias de semana a Missa é às 18h; treino e adoração passam
            para as 17h30, logo depois das aulas. */
-        bloco('treino', 'Treino (ou caminhada)', '17:30', 30, aula, 'exercicio', false, ''),
         bloco('adoracao', 'Oração / Terço · Adoração', '17:30', 30, estudo, 'espiritual', false, 'Adoração, se possível.'),
         bloco('missa-semana', 'Missa', '18:00', 30, semana, 'espiritual', true, ''),
-        bloco('atividade-sabado', 'Atividade física leve ou lazer', '18:00', 30, [6], 'exercicio', false, ''),
-        bloco('passeio-domingo', 'Passeio · Natureza · Atividade física', '18:00', 30, [0], 'exercicio', false, ''),
 
         bloco('banho-jantar', 'Banho · Jantar', '18:30', 30, todos, 'alimentacao', false, ''),
 
@@ -84,7 +82,6 @@
           { id: u.id(), titulo: 'Missa' },
           { id: u.id(), titulo: 'Oração' },
           { id: u.id(), titulo: 'Estudos' },
-          { id: u.id(), titulo: 'Treino' },
           { id: u.id(), titulo: 'Leitura' },
           { id: u.id(), titulo: 'Gratidão' }
         ] },
@@ -103,7 +100,6 @@
 
       alternativas: [
         { id: u.id(), quando: 'Se não conseguir estudar', saida: 'Faça uma leitura espiritual ou revise anotações.' },
-        { id: u.id(), quando: 'Se não puder treinar', saida: 'Caminhada leve ou alongamento.' },
         { id: u.id(), quando: 'Se o dia estiver pesado', saida: 'Respire, reze o terço e confie em Deus.' },
         { id: u.id(), quando: 'No fim de semana', saida: 'Reserve um tempo para lazer e convívio.' }
       ],
@@ -111,7 +107,6 @@
       prioridades: [
         'Missa todos os dias (6h)',
         'Estudos e tarefas',
-        'Exercício físico',
         'Tempo de oração',
         'Descanso de qualidade',
         'Alimentação saudável'
