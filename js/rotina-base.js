@@ -13,9 +13,10 @@
     id: 'fe-estudo-disciplina',
     nome: 'Fé, estudo e disciplina',
     lemaExemplo: 'Ad Deum per vitam ordinariam.',
-    versao: 2,
+    versao: 3,
     notas: {
-      2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.'
+      2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.',
+      3: 'Inglês no sábado, das 9h ao meio-dia. A administração da casa sai da manhã de sábado e vira meia hora por dia, às 6h, de segunda a sexta.'
     },
     montar: function (u) {
     var todos = [0, 1, 2, 3, 4, 5, 6];
@@ -42,8 +43,10 @@
 
         bloco('aulas-manha', 'Aulas', '08:00', 240, aula, 'escola', true, ''),
         bloco('estudos-manha', 'Estudos / Tarefas', '08:00', 240, estudo, 'estudo', false, ''),
-        bloco('casa-sabado', 'Administração da casa / Tarefas', '08:00', 240, [6], 'casa', false, ''),
+        bloco('ingles', 'Inglês', '09:00', 180, [6], 'escola', true, ''),
         bloco('missa-dominical', 'Missa dominical e comunidade', '08:00', 240, [0], 'espiritual', true, ''),
+
+        bloco('casa', 'Casa · Organização', '06:00', 30, semana, 'casa', false, 'Um pouco por dia rende mais que uma manhã inteira.'),
 
         bloco('almoco', 'Almoço · Gratidão · Descanso breve', '12:00', 30, todos, 'alimentacao', false, ''),
         bloco('leitura-leve', 'Leitura leve', '12:30', 60, aula, 'hobby', false, ''),
