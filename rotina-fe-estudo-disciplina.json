@@ -2,10 +2,10 @@
   "tipo": "rotina",
   "quadro": "fe-estudo-disciplina",
   "nome": "Fé, estudo e disciplina",
-  "versao": 4,
+  "versao": 5,
   "blocos": [
     {
-      "id": "mtkhiietnr17j",
+      "id": "mtmxi3z9ssges",
       "chave": "acordar",
       "titulo": "Acordar · Oferecer o dia a Deus",
       "hora": "05:00",
@@ -24,7 +24,7 @@
       "nota": "Um copo de água ao acordar."
     },
     {
-      "id": "mtkhiiet06n5f",
+      "id": "mtmxi3z9r44xd",
       "chave": "oracao-manha",
       "titulo": "Oração da manhã · Leitura espiritual · Terço",
       "hora": "05:30",
@@ -43,7 +43,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietdaau5",
+      "id": "mtmxi3z9lf4op",
       "chave": "missa-fds",
       "titulo": "Missa",
       "hora": "06:00",
@@ -57,7 +57,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietn3i71",
+      "id": "mtmxi3z9wwa18",
       "chave": "cafe",
       "titulo": "Café da manhã · Arrumar-se",
       "hora": "06:30",
@@ -76,7 +76,7 @@
       "nota": "Preparar-se para o dia."
     },
     {
-      "id": "mtkhiiet953hz",
+      "id": "mtmxi3z9hv88m",
       "chave": "revisao-dia",
       "titulo": "Revisão do dia",
       "hora": "07:00",
@@ -95,7 +95,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietfwzqv",
+      "id": "mtmxi3z9k4zhc",
       "chave": "saida",
       "titulo": "Saída · Deslocamento · Organização",
       "hora": "07:30",
@@ -114,7 +114,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietug2ex",
+      "id": "mtmxi3z9onbxi",
       "chave": "aulas-manha",
       "titulo": "Aulas",
       "hora": "08:00",
@@ -129,7 +129,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiiet1nsmj",
+      "id": "mtmxi3z90lbez",
       "chave": "estudos-manha",
       "titulo": "Estudos / Tarefas",
       "hora": "08:00",
@@ -143,7 +143,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietdh2xy",
+      "id": "mtmxi3z9iz6d1",
       "chave": "ingles",
       "titulo": "Inglês",
       "hora": "09:00",
@@ -156,7 +156,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiiethgmpx",
+      "id": "mtmxi3z9zt6wy",
       "chave": "missa-dominical",
       "titulo": "Missa dominical e comunidade",
       "hora": "08:00",
@@ -169,7 +169,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietl4s77",
+      "id": "mtmxi3z9ezh9z",
       "chave": "casa",
       "titulo": "Casa · Organização",
       "hora": "06:00",
@@ -186,7 +186,7 @@
       "nota": "Um pouco por dia rende mais que uma manhã inteira."
     },
     {
-      "id": "mtkhiiet239me",
+      "id": "mtmxi3z90ad82",
       "chave": "almoco",
       "titulo": "Almoço · Gratidão · Descanso breve",
       "hora": "12:00",
@@ -205,7 +205,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietvooln",
+      "id": "mtmxi3z9ipdmh",
       "chave": "leitura-leve",
       "titulo": "Leitura leve",
       "hora": "12:30",
@@ -220,7 +220,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietos319",
+      "id": "mtmxi3z9xrusc",
       "chave": "descanso-tarde",
       "titulo": "Descanso",
       "hora": "12:30",
@@ -235,7 +235,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiiet66u0m",
+      "id": "mtmxi3z9fi2l6",
       "chave": "almoco-familia",
       "titulo": "Almoço em família · Descanso",
       "hora": "12:30",
@@ -248,7 +248,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietodw19",
+      "id": "mtmxi3z92gnmp",
       "chave": "aulas-tarde",
       "titulo": "Aulas",
       "hora": "13:30",
@@ -263,7 +263,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietz3pav",
+      "id": "mtmxi3z9cy0m0",
       "chave": "estudos-tarde",
       "titulo": "Estudos / Tarefas",
       "hora": "13:30",
@@ -277,7 +277,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiieta5ut7",
+      "id": "mtmxi3z9qnek6",
       "chave": "estudos-sabado",
       "titulo": "Estudos pessoais / Projetos",
       "hora": "13:30",
@@ -290,7 +290,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietc4jrh",
+      "id": "mtmxi3z9utsvo",
       "chave": "familia-domingo",
       "titulo": "Tempo com família · Lazer · Leitura",
       "hora": "13:30",
@@ -303,7 +303,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietqruom",
+      "id": "mtmxi3z9l95bm",
       "chave": "adoracao",
       "titulo": "Oração / Terço · Adoração",
       "hora": "17:30",
@@ -317,7 +317,7 @@
       "nota": "Adoração, se possível."
     },
     {
-      "id": "mtkhiiets9kdm",
+      "id": "mtmxi3z9yhayl",
       "chave": "missa-semana",
       "titulo": "Missa",
       "hora": "18:00",
@@ -334,7 +334,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietd4ao0",
+      "id": "mtmxi3z9bz0nv",
       "chave": "banho-jantar",
       "titulo": "Banho · Jantar",
       "hora": "18:30",
@@ -353,7 +353,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietk1am5",
+      "id": "mtmxi3z9pmgum",
       "chave": "estudos-noite",
       "titulo": "Estudos",
       "hora": "19:00",
@@ -368,7 +368,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietujj00",
+      "id": "mtmxi3z9qh52w",
       "chave": "formacao-noite",
       "titulo": "Leitura espiritual / Formação",
       "hora": "19:00",
@@ -382,7 +382,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiiet28rhx",
+      "id": "mtmxi3z9u88jo",
       "chave": "livre-sabado",
       "titulo": "Livre · Filme bom · Família",
       "hora": "19:00",
@@ -395,7 +395,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiiet4scii",
+      "id": "mtmxi3z9jxg3o",
       "chave": "planejamento-domingo",
       "titulo": "Planejamento da semana · Leitura",
       "hora": "19:00",
@@ -408,7 +408,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiietji7q6",
+      "id": "mtmxi3z93z7us",
       "chave": "revisar-conteudo",
       "titulo": "Revisar conteúdo · Exercícios / Trabalhos",
       "hora": "20:00",
@@ -427,7 +427,7 @@
       "nota": ""
     },
     {
-      "id": "mtkhiieto0i7h",
+      "id": "mtmxi3z9xsne3",
       "chave": "dormir",
       "titulo": "Descanso · Dormir bem",
       "hora": "22:00",
@@ -448,7 +448,7 @@
   ],
   "rituais": [
     {
-      "id": "mtkhiietg6m2v",
+      "id": "mtmxi3z9nj49b",
       "chave": "checklist-diario",
       "titulo": "Checklist diário",
       "periodo": "qualquer",
@@ -464,29 +464,29 @@
       ],
       "itens": [
         {
-          "id": "mtkhiiet5yz07",
+          "id": "mtmxi3z9fu5s9",
           "titulo": "Missa"
         },
         {
-          "id": "mtkhiietxoq3m",
+          "id": "mtmxi3z9o42q6",
           "titulo": "Oração"
         },
         {
-          "id": "mtkhiietnx6j3",
+          "id": "mtmxi3z9y0doq",
           "titulo": "Estudos"
         },
         {
-          "id": "mtkhiietvg8zy",
+          "id": "mtmxi3z9now9h",
           "titulo": "Leitura"
         },
         {
-          "id": "mtkhiietodk5i",
+          "id": "mtmxi3z9ie96l",
           "titulo": "Gratidão"
         }
       ]
     },
     {
-      "id": "mtkhiietf0vi1",
+      "id": "mtmxi3z9o7paa",
       "chave": "oracao-noite",
       "titulo": "Oração da noite",
       "periodo": "noite",
@@ -502,22 +502,22 @@
       ],
       "itens": [
         {
-          "id": "mtkhiietf1poz",
+          "id": "mtmxi3z96soev",
           "titulo": "Exame de consciência"
         },
         {
-          "id": "mtkhiieti1srx",
+          "id": "mtmxi3z9vnrep",
           "titulo": "Oração da noite"
         },
         {
-          "id": "mtkhiietvj9vv",
+          "id": "mtmxi3z90i4ig",
           "titulo": "Agradecimentos"
         }
       ]
     }
   ],
   "prioridades": [
-    "Missa todos os dias (6h)",
+    "Missa todos os dias",
     "Estudos e tarefas",
     "Tempo de oração",
     "Descanso de qualidade",
@@ -525,17 +525,17 @@
   ],
   "alternativas": [
     {
-      "id": "mtkhiiet29p5i",
+      "id": "mtmxi3z9mek3v",
       "quando": "Se não conseguir estudar",
       "saida": "Faça uma leitura espiritual ou revise anotações."
     },
     {
-      "id": "mtkhiietmzpp5",
+      "id": "mtmxi3z9h3pyz",
       "quando": "Se o dia estiver pesado",
       "saida": "Respire, reze o terço e confie em Deus."
     },
     {
-      "id": "mtkhiietl2o07",
+      "id": "mtmxi3z91e6uy",
       "quando": "No fim de semana",
       "saida": "Reserve um tempo para lazer e convívio."
     }

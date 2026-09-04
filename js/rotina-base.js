@@ -13,11 +13,12 @@
     id: 'fe-estudo-disciplina',
     nome: 'Fé, estudo e disciplina',
     lemaExemplo: 'Ad Deum per vitam ordinariam.',
-    versao: 4,
+    versao: 5,
     notas: {
       2: 'Missa às 18h nos dias de semana; treino e adoração passam para as 17h30.',
       3: 'Inglês no sábado, das 9h ao meio-dia. A administração da casa sai da manhã de sábado e vira meia hora por dia, às 6h, de segunda a sexta.',
-      4: 'Sai o exercício físico: treino, atividade de sábado, passeio de domingo, o item do checklist, a prioridade e a saída correspondente. O horário fica livre.'
+      4: 'Sai o exercício físico: treino, atividade de sábado, passeio de domingo, o item do checklist, a prioridade e a saída correspondente. O horário fica livre.',
+      5: 'A prioridade passa a ser só "Missa todos os dias" — o horário já está na rotina e mudou com o tempo.'
     },
     montar: function (u) {
     var todos = [0, 1, 2, 3, 4, 5, 6];
@@ -105,7 +106,7 @@
       ],
 
       prioridades: [
-        'Missa todos os dias (6h)',
+        'Missa todos os dias',
         'Estudos e tarefas',
         'Tempo de oração',
         'Descanso de qualidade',
