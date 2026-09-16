@@ -1,0 +1,546 @@
+{
+  "tipo": "rotina",
+  "quadro": "fe-estudo-disciplina",
+  "nome": "Fé, estudo e disciplina",
+  "versao": 5,
+  "blocos": [
+    {
+      "id": "mtmxi3z9ssges",
+      "chave": "acordar",
+      "titulo": "Acordar · Oferecer o dia a Deus",
+      "hora": "05:00",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "sono",
+      "fixo": true,
+      "nota": "Um copo de água ao acordar."
+    },
+    {
+      "id": "mtmxi3z9r44xd",
+      "chave": "oracao-manha",
+      "titulo": "Oração da manhã · Leitura espiritual · Terço",
+      "hora": "05:30",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "espiritual",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9lf4op",
+      "chave": "missa-fds",
+      "titulo": "Missa",
+      "hora": "06:00",
+      "duracao": 30,
+      "dias": [
+        0,
+        6
+      ],
+      "area": "espiritual",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9wwa18",
+      "chave": "cafe",
+      "titulo": "Café da manhã · Arrumar-se",
+      "hora": "06:30",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "alimentacao",
+      "fixo": false,
+      "nota": "Preparar-se para o dia."
+    },
+    {
+      "id": "mtmxi3z9hv88m",
+      "chave": "revisao-dia",
+      "titulo": "Revisão do dia",
+      "hora": "07:00",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "pessoal",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9k4zhc",
+      "chave": "saida",
+      "titulo": "Saída · Deslocamento · Organização",
+      "hora": "07:30",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "pessoal",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9onbxi",
+      "chave": "aulas-manha",
+      "titulo": "Aulas",
+      "hora": "08:00",
+      "duracao": 240,
+      "dias": [
+        1,
+        3,
+        5
+      ],
+      "area": "escola",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z90lbez",
+      "chave": "estudos-manha",
+      "titulo": "Estudos / Tarefas",
+      "hora": "08:00",
+      "duracao": 240,
+      "dias": [
+        2,
+        4
+      ],
+      "area": "estudo",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9iz6d1",
+      "chave": "ingles",
+      "titulo": "Inglês",
+      "hora": "09:00",
+      "duracao": 180,
+      "dias": [
+        6
+      ],
+      "area": "escola",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9zt6wy",
+      "chave": "missa-dominical",
+      "titulo": "Missa dominical e comunidade",
+      "hora": "08:00",
+      "duracao": 240,
+      "dias": [
+        0
+      ],
+      "area": "espiritual",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9ezh9z",
+      "chave": "casa",
+      "titulo": "Casa · Organização",
+      "hora": "06:00",
+      "duracao": 30,
+      "dias": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "area": "casa",
+      "fixo": false,
+      "nota": "Um pouco por dia rende mais que uma manhã inteira."
+    },
+    {
+      "id": "mtmxi3z90ad82",
+      "chave": "almoco",
+      "titulo": "Almoço · Gratidão · Descanso breve",
+      "hora": "12:00",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "alimentacao",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9ipdmh",
+      "chave": "leitura-leve",
+      "titulo": "Leitura leve",
+      "hora": "12:30",
+      "duracao": 60,
+      "dias": [
+        1,
+        3,
+        5
+      ],
+      "area": "hobby",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9xrusc",
+      "chave": "descanso-tarde",
+      "titulo": "Descanso",
+      "hora": "12:30",
+      "duracao": 60,
+      "dias": [
+        2,
+        4,
+        6
+      ],
+      "area": "descanso",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9fi2l6",
+      "chave": "almoco-familia",
+      "titulo": "Almoço em família · Descanso",
+      "hora": "12:30",
+      "duracao": 60,
+      "dias": [
+        0
+      ],
+      "area": "pessoal",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z92gnmp",
+      "chave": "aulas-tarde",
+      "titulo": "Aulas",
+      "hora": "13:30",
+      "duracao": 240,
+      "dias": [
+        1,
+        3,
+        5
+      ],
+      "area": "escola",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9cy0m0",
+      "chave": "estudos-tarde",
+      "titulo": "Estudos / Tarefas",
+      "hora": "13:30",
+      "duracao": 240,
+      "dias": [
+        2,
+        4
+      ],
+      "area": "estudo",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9qnek6",
+      "chave": "estudos-sabado",
+      "titulo": "Estudos pessoais / Projetos",
+      "hora": "13:30",
+      "duracao": 240,
+      "dias": [
+        6
+      ],
+      "area": "estudo",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9utsvo",
+      "chave": "familia-domingo",
+      "titulo": "Tempo com família · Lazer · Leitura",
+      "hora": "13:30",
+      "duracao": 240,
+      "dias": [
+        0
+      ],
+      "area": "pessoal",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9l95bm",
+      "chave": "adoracao",
+      "titulo": "Oração / Terço · Adoração",
+      "hora": "17:30",
+      "duracao": 30,
+      "dias": [
+        2,
+        4
+      ],
+      "area": "espiritual",
+      "fixo": false,
+      "nota": "Adoração, se possível."
+    },
+    {
+      "id": "mtmxi3z9yhayl",
+      "chave": "missa-semana",
+      "titulo": "Missa",
+      "hora": "18:00",
+      "duracao": 30,
+      "dias": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "area": "espiritual",
+      "fixo": true,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9bz0nv",
+      "chave": "banho-jantar",
+      "titulo": "Banho · Jantar",
+      "hora": "18:30",
+      "duracao": 30,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "alimentacao",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9pmgum",
+      "chave": "estudos-noite",
+      "titulo": "Estudos",
+      "hora": "19:00",
+      "duracao": 60,
+      "dias": [
+        1,
+        3,
+        5
+      ],
+      "area": "estudo",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9qh52w",
+      "chave": "formacao-noite",
+      "titulo": "Leitura espiritual / Formação",
+      "hora": "19:00",
+      "duracao": 60,
+      "dias": [
+        2,
+        4
+      ],
+      "area": "espiritual",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9u88jo",
+      "chave": "livre-sabado",
+      "titulo": "Livre · Filme bom · Família",
+      "hora": "19:00",
+      "duracao": 60,
+      "dias": [
+        6
+      ],
+      "area": "hobby",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9jxg3o",
+      "chave": "planejamento-domingo",
+      "titulo": "Planejamento da semana · Leitura",
+      "hora": "19:00",
+      "duracao": 60,
+      "dias": [
+        0
+      ],
+      "area": "pessoal",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z93z7us",
+      "chave": "revisar-conteudo",
+      "titulo": "Revisar conteúdo · Exercícios / Trabalhos",
+      "hora": "20:00",
+      "duracao": 60,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "estudo",
+      "fixo": false,
+      "nota": ""
+    },
+    {
+      "id": "mtmxi3z9xsne3",
+      "chave": "dormir",
+      "titulo": "Descanso · Dormir bem",
+      "hora": "22:00",
+      "duracao": 0,
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "area": "sono",
+      "fixo": true,
+      "nota": "Dormir bem para servir melhor amanhã."
+    }
+  ],
+  "rituais": [
+    {
+      "id": "mtmxi3z9nj49b",
+      "chave": "checklist-diario",
+      "titulo": "Checklist diário",
+      "periodo": "qualquer",
+      "hora": "",
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "itens": [
+        {
+          "id": "mtmxi3z9fu5s9",
+          "titulo": "Missa"
+        },
+        {
+          "id": "mtmxi3z9o42q6",
+          "titulo": "Oração"
+        },
+        {
+          "id": "mtmxi3z9y0doq",
+          "titulo": "Estudos"
+        },
+        {
+          "id": "mtmxi3z9now9h",
+          "titulo": "Leitura"
+        },
+        {
+          "id": "mtmxi3z9ie96l",
+          "titulo": "Gratidão"
+        }
+      ]
+    },
+    {
+      "id": "mtmxi3z9o7paa",
+      "chave": "oracao-noite",
+      "titulo": "Oração da noite",
+      "periodo": "noite",
+      "hora": "21:00",
+      "dias": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "itens": [
+        {
+          "id": "mtmxi3z96soev",
+          "titulo": "Exame de consciência"
+        },
+        {
+          "id": "mtmxi3z9vnrep",
+          "titulo": "Oração da noite"
+        },
+        {
+          "id": "mtmxi3z90i4ig",
+          "titulo": "Agradecimentos"
+        }
+      ]
+    }
+  ],
+  "prioridades": [
+    "Missa todos os dias",
+    "Estudos e tarefas",
+    "Tempo de oração",
+    "Descanso de qualidade",
+    "Alimentação saudável"
+  ],
+  "alternativas": [
+    {
+      "id": "mtmxi3z9mek3v",
+      "quando": "Se não conseguir estudar",
+      "saida": "Faça uma leitura espiritual ou revise anotações."
+    },
+    {
+      "id": "mtmxi3z9h3pyz",
+      "quando": "Se o dia estiver pesado",
+      "saida": "Respire, reze o terço e confie em Deus."
+    },
+    {
+      "id": "mtmxi3z91e6uy",
+      "quando": "No fim de semana",
+      "saida": "Reserve um tempo para lazer e convívio."
+    }
+  ],
+  "lema": "Ad Deum per vitam ordinariam.",
+  "acordar": "05:00",
+  "dormir": "22:00"
+}
