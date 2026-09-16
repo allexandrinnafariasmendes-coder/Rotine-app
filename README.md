@@ -24,6 +24,38 @@ Não há variáveis de ambiente nem backend: é um app 100% client-side, feito
 para ser hospedado como site estático (o `base: './'` no `vite.config.ts`
 permite abrir o build a partir de qualquer subpasta ou até do disco local).
 
+## Instalar no celular (PWA)
+
+O Rotine é um **Progressive Web App**: instala como um app de verdade — ícone
+na tela inicial, abre em tela cheia (sem barra de endereço) e continua
+funcionando sem internet depois da primeira visita, porque todo o app é
+pré-armazenado no aparelho por um service worker (`vite-plugin-pwa`) e os
+dados já ficam salvos localmente (IndexedDB).
+
+**Publicação automática.** Todo push nas branches `main` e
+`claude/school-app-high-school-1330i5` builda o app e publica no GitHub
+Pages (veja `.github/workflows/deploy-pages.yml`). Isso exige uma única
+configuração manual, feita uma vez pelo dono do repositório:
+
+1. No GitHub, abra **Settings → Pages**.
+2. Em **Source**, escolha **GitHub Actions**.
+3. Depois do primeiro workflow rodar com sucesso, o app fica em
+   `https://<usuário>.github.io/Rotine-app/`.
+
+**Instalando no aparelho**, depois de abrir esse link:
+
+- **Android (Chrome):** toque no menu (⋮) → **Instalar app** (ou o banner
+  "Adicionar à tela inicial" que aparece sozinho).
+- **iPhone/iPad (Safari):** toque em **Compartilhar** (o ícone de
+  quadrado com seta) → **Adicionar à Tela de Início**. Precisa ser pelo
+  Safari — o Chrome no iOS não tem essa opção.
+- **Computador (Chrome/Edge):** ícone de instalação (⊕) na barra de
+  endereço.
+
+Depois de instalado, o ícone abre o app sozinho, sem navegador visível, e
+volta a funcionar mesmo se o Wi-Fi cair — só a primeira abertura precisa de
+internet.
+
 ## Stack
 
 - **React 19 + TypeScript** — componentes funcionais, tipagem estrita.

@@ -11,7 +11,14 @@
     <meta name="theme-color" content="#5546d4" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#15161b" media="(prefers-color-scheme: dark)" />
     <link rel="icon" type="image/svg+xml" href="./icon.svg" />
-    <link rel="manifest" href="./manifest.webmanifest" />
+    <!-- vite-plugin-pwa injects the manifest link and service worker registration at build time. -->
+
+    <!-- iOS: Safari ignores the web manifest's `display`, so these tags are what
+         actually turns "Adicionar à Tela de Início" into a standalone app. -->
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Rotine" />
     <script>
       // Apply the stored theme before first paint to avoid a flash of the wrong theme.
       (function () {
