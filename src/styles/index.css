@@ -1,0 +1,251 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens.
+ *
+ * Chart / data colors come from a palette validated with the data-viz
+ * palette validator (lightness band, chroma floor, colour-vision-deficiency
+ * separation, normal-vision floor, contrast vs surface) against this app's
+ * own surfaces: #ffffff in light mode and #15161b in dark mode.
+ *   - categorical slots 1..8: used for subject and event-type identity, always
+ *     paired with a text label and an icon so colour never carries meaning alone.
+ *   - brand indigo ramp: the single sequential hue used for every magnitude
+ *     mark (progress bars, study-hours bars). Validated as an ordinal ramp.
+ *   - status: good / warning / serious / critical, reserved, never a series.
+ */
+@theme {
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  /* Brand indigo — the sequential hue for all magnitude marks */
+  --color-brand-50: #f4f3fe;
+  --color-brand-100: #eeecfd;
+  --color-brand-200: #c7c2f5;
+  --color-brand-300: #a9a2ef;
+  --color-brand-400: #8a80e8;
+  --color-brand-500: #6b5fe0;
+  --color-brand-600: #5546d4;
+  --color-brand-700: #4536b0;
+  --color-brand-800: #33288a;
+
+  /* Categorical identity slots (light mode steps) */
+  --color-cat-1: #2a78d6;
+  --color-cat-2: #eb6834;
+  --color-cat-3: #1baf7a;
+  --color-cat-4: #eda100;
+  --color-cat-5: #e87ba4;
+  --color-cat-6: #008300;
+  --color-cat-7: #4a3aa7;
+  --color-cat-8: #e34948;
+
+  /* Reserved status palette */
+  --color-good: #0ca30c;
+  --color-warning: #fab219;
+  --color-serious: #ec835a;
+  --color-critical: #d03b3b;
+
+  --radius-card: 1rem;
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* ---------- Semantic roles, themed ---------- */
+:root {
+  color-scheme: light;
+  --plane: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f2f3f7;
+  --surface-hover: #eceef4;
+  --ink: #101117;
+  --ink-2: #4c4f5c;
+  --ink-muted: #7a7e8c;
+  --hairline: #e3e5ec;
+  --hairline-strong: #ccd0da;
+  --accent: #5546d4;
+  --accent-ink: #ffffff;
+  --accent-soft: #eeecfd;
+  --accent-soft-ink: #33288a;
+  --grid: #e8eaf0;
+  --baseline: #ccd0da;
+  --shadow-card: 0 1px 2px rgba(16, 17, 23, 0.05), 0 8px 24px -16px rgba(16, 17, 23, 0.18);
+  /* categorical slots, light steps */
+  --c1: #2a78d6;
+  --c2: #eb6834;
+  --c3: #1baf7a;
+  --c4: #eda100;
+  --c5: #e87ba4;
+  --c6: #008300;
+  --c7: #4a3aa7;
+  --c8: #e34948;
+  /* sequential fill for magnitude marks */
+  --seq: #5546d4;
+  --seq-track: #eceef4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme='light'])) {
+    color-scheme: dark;
+    --plane: #0b0c10;
+    --surface: #15161b;
+    --surface-2: #1d1f26;
+    --surface-hover: #24262f;
+    --ink: #f7f8fa;
+    --ink-2: #b9bcc7;
+    --ink-muted: #8b8f9c;
+    --hairline: #282a33;
+    --hairline-strong: #3a3d48;
+    --accent: #8a80e8;
+    --accent-ink: #14121f;
+    --accent-soft: #241f45;
+    --accent-soft-ink: #c7c2f5;
+    --grid: #24262f;
+    --baseline: #3a3d48;
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px -16px rgba(0, 0, 0, 0.8);
+    --c1: #3987e5;
+    --c2: #d95926;
+    --c3: #199e70;
+    --c4: #c98500;
+    --c5: #d55181;
+    --c6: #008300;
+    --c7: #9085e9;
+    --c8: #e66767;
+    --seq: #8a80e8;
+    --seq-track: #24262f;
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --plane: #0b0c10;
+  --surface: #15161b;
+  --surface-2: #1d1f26;
+  --surface-hover: #24262f;
+  --ink: #f7f8fa;
+  --ink-2: #b9bcc7;
+  --ink-muted: #8b8f9c;
+  --hairline: #282a33;
+  --hairline-strong: #3a3d48;
+  --accent: #8a80e8;
+  --accent-ink: #14121f;
+  --accent-soft: #241f45;
+  --accent-soft-ink: #c7c2f5;
+  --grid: #24262f;
+  --baseline: #3a3d48;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.5), 0 8px 24px -16px rgba(0, 0, 0, 0.8);
+  --c1: #3987e5;
+  --c2: #d95926;
+  --c3: #199e70;
+  --c4: #c98500;
+  --c5: #d55181;
+  --c6: #008300;
+  --c7: #9085e9;
+  --c8: #e66767;
+  --seq: #8a80e8;
+  --seq-track: #24262f;
+}
+
+/* Expose the semantic roles to Tailwind utilities (bg-surface, text-ink, …) */
+@theme inline {
+  --color-plane: var(--plane);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-surface-hover: var(--surface-hover);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-muted: var(--ink-muted);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-ink: var(--accent-soft-ink);
+  --color-grid: var(--grid);
+  --color-baseline: var(--baseline);
+  --color-seq: var(--seq);
+  --color-seq-track: var(--seq-track);
+}
+
+@layer base {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    background: var(--plane);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+
+  ::selection {
+    background: var(--accent-soft);
+    color: var(--accent-soft-ink);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+    color: inherit;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer components {
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* Hide scrollbars on horizontal rails without losing scrollability */
+  .no-scrollbar {
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Safe-area padding for the mobile bottom navigation */
+.pb-safe {
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px));
+}
